@@ -41,7 +41,8 @@
   },
   "scripts": {
     "build": "webpack",
-    "types": "npx -p typescript tsc"
+    "types": "npx -p typescript tsc",
+    "push": "npm publish && git push -u origin main"
   },
   "devDependencies": {
     "text-decoding": "^1.0.0",
@@ -61,8 +62,16 @@
   "engines": {
     "node": ">=12.11.0"
   },
+  "homepage": "https://github.com/sonion028/fetchok#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonion028/fetchok.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sonion028/fetchok/issues"
+  },
   "author": "sonion",
-  "license": "ISC",
+  "license": "MIT",
   "keywords": [
     "fetchok",
     "http",
