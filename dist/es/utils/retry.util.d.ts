@@ -1,5 +1,5 @@
-import type { ParamOptionsHttp, ProcessedOptions, RequestMainFuncHttpXhrWx, RequestMainFunc, RequestFunc, ParamOptions, RequestPromiseReturned } from "../../types";
-type _requestRetryFunc = (options: ParamOptionsHttp | ProcessedOptions, _requestMain: RequestMainFuncHttpXhrWx) => ReturnType<RequestMainFunc>;
+import type { RequestOptionsHttp, ProcessedOptions, RequestMainFuncHttpXhrWx, RequestMainFunc, Requestor, RequestOptions, RequestPromiseReturned } from "../../types";
+type _requestRetryFunc = (options: RequestOptionsHttp | ProcessedOptions, _requestMain: RequestMainFuncHttpXhrWx) => ReturnType<RequestMainFunc>;
 /**
  * @Author: sonion
  * @msg: node:http、xhr基础封装，重试部分。在内部调_request
@@ -10,16 +10,16 @@ type _requestRetryFunc = (options: ParamOptionsHttp | ProcessedOptions, _request
 declare const _requestRetry: _requestRetryFunc;
 type TaskList = {
     url: string;
-    options: ParamOptions;
+    options: RequestOptions;
 }[];
-export type concurrencyRequestFunc = (requestFunc: RequestFunc, tasks: TaskList, maxNum: number) => Promise<RequestPromiseReturned[]>;
+export type concurrencyRequestor = (requestFunc: Requestor, tasks: TaskList, maxNum: number) => Promise<RequestPromiseReturned[]>;
 /**
  * @Author: sonion
  * @msg: 并发控制函数
- * @param {RequestFunc} requestFunc - 请求方法
+ * @param {Requestor} requestFunc - 请求方法
  * @param {Array} tasks - 请求参数对象数组
  * @param {number} maxNum - 最大并发数
  * @return {Promise<unknown>} - 返回请求Promise数组的Promise
  */
-declare const concurrencyRequest: concurrencyRequestFunc;
+declare const concurrencyRequest: concurrencyRequestor;
 export { _requestRetry, concurrencyRequest };

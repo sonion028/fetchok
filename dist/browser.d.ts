@@ -5,7 +5,7 @@ import { requestEasy, requestXhr } from './es/request/xhrRequrest';
 import { createJsonp, requestJsonp } from './es/request/jsonpRequest';
 import { requestSse } from './es/request/sseRequest';
 import { createInterceptorsPreset } from './es/interceptors/preset';
-import { createResponsePreset } from './es/interceptors/responsePreset';
+import { createResponsePreset } from './es/interceptors/presetResponse';
 import { createFormData } from './es/utils/param/support.Headers';
 import { concurrencyRequest } from './es/utils/retry.util';
 export { toParams, createFormData, // 创建数据

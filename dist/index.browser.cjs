@@ -1,21 +1,21 @@
-(()=>{"use strict";var e={116:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.createInterceptor=void 0;t.createInterceptor=function(e){var t=this;return function(){for(var r,n,o,a=[],s=0;s<arguments.length;s++)a[s]=arguments[s];if(e.request?(n=(r=e.request.apply(e,a))[0],o=r[1]):(n=a[0],o=a[1]),!n)throw{code:-1,msg:"请求拦截器需要返回一个对象。url属性必填, options属性可选"};return t(n,o).then((function(t){if(e.response){var r=e.response(t);if(null==r)throw{code:-1,msg:"响应拦截器必须返回不为空的数据"};return r}return t})).catch((function(t){throw e.catch&&e.catch(t),t})).finally((function(){e.finally&&e.finally()}))}}},199:function(e,t,r){var n=this&&this.__assign||function(){return n=Object.assign||function(e){for(var t,r=1,n=arguments.length;r<n;r++)for(var o in t=arguments[r])Object.prototype.hasOwnProperty.call(t,o)&&(e[o]=t[o]);return e},n.apply(this,arguments)},o=this&&this.__rest||function(e,t){var r={};for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&t.indexOf(n)<0&&(r[n]=e[n]);if(null!=e&&"function"==typeof Object.getOwnPropertySymbols){var o=0;for(n=Object.getOwnPropertySymbols(e);o<n.length;o++)t.indexOf(n[o])<0&&Object.prototype.propertyIsEnumerable.call(e,n[o])&&(r[n[o]]=e[n[o]])}return r};Object.defineProperty(t,"__esModule",{value:!0}),t.createInterceptorsPreset=void 0;var a=r(343),s=r(164);t.createInterceptorsPreset=function(e,t){void 0===e&&(e="sessionStorage"),void 0===t&&(t="Bearer");var r=(0,a.createTokenManager)(e,t);return n(n({request:function(e,t){return t.headers instanceof Headers?t.headers.set("Authorization",r.token||""):(t.headers=t.headers||{},t.headers.Authorization=r.token),[e,t]}},(0,s.createResponsePreset)((function(e){e.status;var t,n,a,s,i,c,u,l,f=e.headers,d=o(e,["status","headers"]);u=f.get("Authorization"),l=f.get("refreshtoken"),"data"in d&&((u=u||(null===(t=d.data)||void 0===t?void 0:t.token)||(null===(a=null===(n=d.data)||void 0===n?void 0:n.data)||void 0===a?void 0:a.token))&&(r.token=u),(l=l||(null===(s=d.data)||void 0===s?void 0:s.refreshtoken)||(null===(c=null===(i=d.data)||void 0===i?void 0:i.data)||void 0===c?void 0:c.refreshtoken))&&(r.refreshToken=l))}))),{tokenManager:r})}},164:function(e,t,r){var n=this&&this.__assign||function(){return n=Object.assign||function(e){for(var t,r=1,n=arguments.length;r<n;r++)for(var o in t=arguments[r])Object.prototype.hasOwnProperty.call(t,o)&&(e[o]=t[o]);return e},n.apply(this,arguments)},o=this&&this.__rest||function(e,t){var r={};for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&t.indexOf(n)<0&&(r[n]=e[n]);if(null!=e&&"function"==typeof Object.getOwnPropertySymbols){var o=0;for(n=Object.getOwnPropertySymbols(e);o<n.length;o++)t.indexOf(n[o])<0&&Object.prototype.propertyIsEnumerable.call(e,n[o])&&(r[n[o]]=e[n[o]])}return r};Object.defineProperty(t,"__esModule",{value:!0}),t.createResponsePreset=void 0;var a=r(547);
+(()=>{"use strict";var e={116:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.createInterceptor=void 0;t.createInterceptor=function(e){var t=this;return function(){for(var r,n,o,a=[],s=0;s<arguments.length;s++)a[s]=arguments[s];if(e.request?(n=(r=e.request.apply(e,a))[0],o=r[1]):(n=a[0],o=a[1]),!n)throw{code:-1,msg:"请求拦截器需要返回一个对象。url属性必填, options属性可选"};return t(n,o).then((function(t){if(e.response){var r=e.response(t);if(null==r)throw{code:-1,msg:"响应拦截器必须返回不为空的数据"};return r}return t})).catch((function(t){throw e.catch&&e.catch(t),t})).finally((function(){e.finally&&e.finally()}))}}},199:function(e,t,r){var n=this&&this.__assign||function(){return n=Object.assign||function(e){for(var t,r=1,n=arguments.length;r<n;r++)for(var o in t=arguments[r])Object.prototype.hasOwnProperty.call(t,o)&&(e[o]=t[o]);return e},n.apply(this,arguments)},o=this&&this.__rest||function(e,t){var r={};for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&t.indexOf(n)<0&&(r[n]=e[n]);if(null!=e&&"function"==typeof Object.getOwnPropertySymbols){var o=0;for(n=Object.getOwnPropertySymbols(e);o<n.length;o++)t.indexOf(n[o])<0&&Object.prototype.propertyIsEnumerable.call(e,n[o])&&(r[n[o]]=e[n[o]])}return r};Object.defineProperty(t,"__esModule",{value:!0}),t.createInterceptorsPreset=void 0;var a=r(343),s=r(880);t.createInterceptorsPreset=function(e,t){void 0===e&&(e="sessionStorage"),void 0===t&&(t="Bearer");var r=(0,a.createTokenManager)(e,t);return n(n({request:function(e,t){return t.headers instanceof Headers?t.headers.set("Authorization",r.token||""):(t.headers=t.headers||{},t.headers.Authorization=r.token),[e,t]}},(0,s.createResponsePreset)((function(e){e.status;var t,n,a,s,i,c,u,l,f=e.headers,d=o(e,["status","headers"]);u=f.get("Authorization"),l=f.get("refreshtoken"),"data"in d&&((u=u||(null===(t=d.data)||void 0===t?void 0:t.token)||(null===(a=null===(n=d.data)||void 0===n?void 0:n.data)||void 0===a?void 0:a.token))&&(r.token=u),(l=l||(null===(s=d.data)||void 0===s?void 0:s.refreshtoken)||(null===(c=null===(i=d.data)||void 0===i?void 0:i.data)||void 0===c?void 0:c.refreshtoken))&&(r.refreshToken=l))}))),{tokenManager:r})}},880:function(e,t,r){var n=this&&this.__assign||function(){return n=Object.assign||function(e){for(var t,r=1,n=arguments.length;r<n;r++)for(var o in t=arguments[r])Object.prototype.hasOwnProperty.call(t,o)&&(e[o]=t[o]);return e},n.apply(this,arguments)},o=this&&this.__rest||function(e,t){var r={};for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&t.indexOf(n)<0&&(r[n]=e[n]);if(null!=e&&"function"==typeof Object.getOwnPropertySymbols){var o=0;for(n=Object.getOwnPropertySymbols(e);o<n.length;o++)t.indexOf(n[o])<0&&Object.prototype.propertyIsEnumerable.call(e,n[o])&&(r[n[o]]=e[n[o]])}return r};Object.defineProperty(t,"__esModule",{value:!0}),t.createResponsePreset=void 0;var a=r(547);
 /**
  * @Author: sonion
  * @msg: 创建响应拦截器预设
- * @param {function} [callback] - 可以传一个函数，会传入响应值。会返回该函数返回值，如没有则返回服务端响应值
- * @return {any}
- */t.createResponsePreset=function(e){return{response:function(t){var r,s,i,c=t.status,u=t.headers,l=o(t,["status","headers"]),f=e&&e(n({status:c,headers:u},l));if(200!==c)throw{code:-1,msg:(null==l?void 0:l.msg)||(null===(r=null==l?void 0:l.data)||void 0===r?void 0:r.msg)||"网络请求错误"};if("data"in l&&"Object"===(0,a.getType)(l.data)&&((null===(s=l.data)||void 0===s?void 0:s.code)||!(null===(i=l.data)||void 0===i?void 0:i.data)))throw l.data;return f||l.data},catch:function(e){throw n({code:-1,msg:e.message},e)}}}},746:function(e,t,r){var n=this&&this.__assign||function(){return n=Object.assign||function(e){for(var t,r=1,n=arguments.length;r<n;r++)for(var o in t=arguments[r])Object.prototype.hasOwnProperty.call(t,o)&&(e[o]=t[o]);return e},n.apply(this,arguments)},o=this&&this.__awaiter||function(e,t,r,n){return new(r||(r=Promise))((function(o,a){function s(e){try{c(n.next(e))}catch(e){a(e)}}function i(e){try{c(n.throw(e))}catch(e){a(e)}}function c(e){var t;e.done?o(e.value):(t=e.value,t instanceof r?t:new r((function(e){e(t)}))).then(s,i)}c((n=n.apply(e,t||[])).next())}))},a=this&&this.__generator||function(e,t){var r,n,o,a,s={label:0,sent:function(){if(1&o[0])throw o[1];return o[1]},trys:[],ops:[]};return a={next:i(0),throw:i(1),return:i(2)},"function"==typeof Symbol&&(a[Symbol.iterator]=function(){return this}),a;function i(i){return function(c){return function(i){if(r)throw new TypeError("Generator is already executing.");for(;a&&(a=0,i[0]&&(s=0)),s;)try{if(r=1,n&&(o=2&i[0]?n.return:i[0]?n.throw||((o=n.return)&&o.call(n),0):n.next)&&!(o=o.call(n,i[1])).done)return o;switch(n=0,o&&(i=[2&i[0],o.value]),i[0]){case 0:case 1:o=i;break;case 4:return s.label++,{value:i[1],done:!1};case 5:s.label++,n=i[1],i=[0];continue;case 7:i=s.ops.pop(),s.trys.pop();continue;default:if(!(o=s.trys,(o=o.length>0&&o[o.length-1])||6!==i[0]&&2!==i[0])){s=0;continue}if(3===i[0]&&(!o||i[1]>o[0]&&i[1]<o[3])){s.label=i[1];break}if(6===i[0]&&s.label<o[1]){s.label=o[1],o=i;break}if(o&&s.label<o[2]){s.label=o[2],s.ops.push(i);break}o[2]&&s.ops.pop(),s.trys.pop();continue}i=t.call(e,s)}catch(e){i=[6,e],n=0}finally{r=o=0}if(5&i[0])throw i[1];return{value:i[0]?i[1]:void 0,done:!0}}([i,c])}}};Object.defineProperty(t,"__esModule",{value:!0}),t.request=void 0;var s=r(562),i=r(256),c=r(116),u=function(e,t){return o(void 0,void 0,void 0,(function(){var r,o,c,u,l,f,d,p,h,y,v,b,g,m,w,P,_,O,T,j,k;return a(this,(function(a){switch(a.label){case 0:t&&(j=(0,s.requestParamsHandle)(e,t),e=j.url,r=j.options,(t.cancel||t.timeout)&&(o=new AbortController,t.signal=o.signal,t.cancel=t.cancel||{},t.cancel.abort=function(){return o.abort()}),t.timeout&&setTimeout(t.cancel.abort,t.timeout)),c=0,u=(null==r?void 0:r.maxRetries)||0,a.label=1;case 1:return a.trys.push([1,8,,9]),[4,fetch(e,r)];case 2:if(!(l=a.sent()).ok)throw{status:l.status,headers:l.headers,msg:l.statusText||"网络请求错误"};return f=+l.headers.get("content-length"),d=l.headers.get("content-type")||"",p=(0,i.getResponseType)(null==t?void 0:t.resType,d),(null==t?void 0:t.onProgress)&&f?[3,4]:[4,l[p]()];case 3:return h=a.sent(),[2,{status:l.status,headers:l.headers,data:h}];case 4:y=0,v=[],b=(0,i.createResponseTypeHandle)(p),g=b[0],m=b[1],w=l.body.getReader(),a.label=5;case 5:return[4,w.read()];case 6:if(P=a.sent(),_=P.done,O=P.value,_)return[2,m(l.status,v,l.headers,f)];if(null===(k=t.signal)||void 0===k?void 0:k.aborted)throw new DOMException("request canceled","AbortError");return y+=O.length,v.push(g.decode(O)),t.onProgress(y,f),[3,5];case 7:return[3,9];case 8:if(T=a.sent(),c>=u||"AbortError"===T.name){if(T instanceof Error)throw n({code:-1,msg:T.message},T);return[2,T]}return[3,9];case 9:if(c++<u)return[3,1];a.label=10;case 10:return[2]}}))}))};t.request=u,
+ * @param {RequestSuccessCallback} [callback] - 可以传一个函数，会传入响应值。会返回该函数返回值，如没有则返回服务端响应值
+ * @return {RespInterceptors}
+ */t.createResponsePreset=function(e){return{response:function(t){var r,s,i,c=t.status,u=t.headers,l=o(t,["status","headers"]),f=e&&e(n({status:c,headers:u},l));if(200!==c)throw{code:-1,msg:(null==l?void 0:l.msg)||(null===(r=null==l?void 0:l.data)||void 0===r?void 0:r.msg)||"网络请求错误"};if("data"in l&&"Object"===(0,a.getType)(l.data)&&((null===(s=l.data)||void 0===s?void 0:s.code)||!(null===(i=l.data)||void 0===i?void 0:i.data)))throw l.data;return f||l.data},catch:function(e){throw n({code:-1,msg:e.message},e)}}}},746:function(e,t,r){var n=this&&this.__assign||function(){return n=Object.assign||function(e){for(var t,r=1,n=arguments.length;r<n;r++)for(var o in t=arguments[r])Object.prototype.hasOwnProperty.call(t,o)&&(e[o]=t[o]);return e},n.apply(this,arguments)},o=this&&this.__awaiter||function(e,t,r,n){return new(r||(r=Promise))((function(o,a){function s(e){try{c(n.next(e))}catch(e){a(e)}}function i(e){try{c(n.throw(e))}catch(e){a(e)}}function c(e){var t;e.done?o(e.value):(t=e.value,t instanceof r?t:new r((function(e){e(t)}))).then(s,i)}c((n=n.apply(e,t||[])).next())}))},a=this&&this.__generator||function(e,t){var r,n,o,a,s={label:0,sent:function(){if(1&o[0])throw o[1];return o[1]},trys:[],ops:[]};return a={next:i(0),throw:i(1),return:i(2)},"function"==typeof Symbol&&(a[Symbol.iterator]=function(){return this}),a;function i(i){return function(c){return function(i){if(r)throw new TypeError("Generator is already executing.");for(;a&&(a=0,i[0]&&(s=0)),s;)try{if(r=1,n&&(o=2&i[0]?n.return:i[0]?n.throw||((o=n.return)&&o.call(n),0):n.next)&&!(o=o.call(n,i[1])).done)return o;switch(n=0,o&&(i=[2&i[0],o.value]),i[0]){case 0:case 1:o=i;break;case 4:return s.label++,{value:i[1],done:!1};case 5:s.label++,n=i[1],i=[0];continue;case 7:i=s.ops.pop(),s.trys.pop();continue;default:if(!(o=s.trys,(o=o.length>0&&o[o.length-1])||6!==i[0]&&2!==i[0])){s=0;continue}if(3===i[0]&&(!o||i[1]>o[0]&&i[1]<o[3])){s.label=i[1];break}if(6===i[0]&&s.label<o[1]){s.label=o[1],o=i;break}if(o&&s.label<o[2]){s.label=o[2],s.ops.push(i);break}o[2]&&s.ops.pop(),s.trys.pop();continue}i=t.call(e,s)}catch(e){i=[6,e],n=0}finally{r=o=0}if(5&i[0])throw i[1];return{value:i[0]?i[1]:void 0,done:!0}}([i,c])}}};Object.defineProperty(t,"__esModule",{value:!0}),t.request=void 0;var s=r(562),i=r(256),c=r(116),u=Promise,l=function(e,t){return o(void 0,void 0,u,(function(){var r,o,c,u,l,f,d,p,h,y,v,b,g,m,w,P,_,O,T,j,k;return a(this,(function(a){switch(a.label){case 0:t&&(j=(0,s.requestParamsHandle)(e,t),e=j.url,r=j.options,(t.cancel||t.timeout)&&(o=new AbortController,t.signal=o.signal,t.cancel=t.cancel||{},t.cancel.abort=function(){return o.abort()}),t.timeout&&setTimeout(t.cancel.abort,t.timeout)),c=0,u=(null==r?void 0:r.maxRetries)||0,a.label=1;case 1:return a.trys.push([1,8,,9]),[4,fetch(e,r)];case 2:if(!(l=a.sent()).ok)throw{status:l.status,headers:l.headers,msg:l.statusText||"网络请求错误"};return f=+l.headers.get("content-length"),d=l.headers.get("content-type")||"",p=(0,i.getResponseType)(null==t?void 0:t.resType,d),(null==t?void 0:t.onProgress)&&f?[3,4]:[4,l[p]()];case 3:return h=a.sent(),[2,{status:l.status,headers:l.headers,data:h}];case 4:y=0,v=[],b=(0,i.createResponseTypeHandle)(p),g=b[0],m=b[1],w=l.body.getReader(),a.label=5;case 5:return[4,w.read()];case 6:if(P=a.sent(),_=P.done,O=P.value,_)return[2,m(l.status,v,l.headers,f)];if(null===(k=t.signal)||void 0===k?void 0:k.aborted)throw new DOMException("request canceled","AbortError");return y+=O.length,v.push(g.decode(O)),t.onProgress(y,f),[3,5];case 7:return[3,9];case 8:if(T=a.sent(),c>=u||"AbortError"===T.name){if(T instanceof Error)throw n({code:-1,msg:T.message},T);return[2,T]}return[3,9];case 9:if(c++<u)return[3,1];a.label=10;case 10:return[2]}}))}))};t.request=l,
 /**
  * @Author: sonion
  * @msg: 创建一个具有拦截器的xhr请求
- * @param {object} interceptors - 拦截器对象
- * @param {function} [interceptors.request] - 请求拦截器，传入请求参数数组。请求拦截器必须返回一个包含url和options的对象
- * @param {function} [interceptors.response] - 响应拦截器，传入响应数据。返回值不可为空
- * @param {function} [interceptors.catch] - 失败拦截器，传入错误对象。
- * @param {function} [interceptors.finally] - 成功失败都会运行的拦截器，没有传入值。
- * @return {function} 返回使用了拦截器的请求函数。参数和request方法一样。
+ * @param { Interceptor } interceptors - 拦截器对象
+ * @param { Interceptor['request'] } [interceptors.request] - 请求拦截器，传入请求参数数组。请求拦截器必须返回一个包含url和options的对象
+ * @param { Interceptor['response'] } [interceptors.response] - 响应拦截器，传入响应数据。返回值不可为空
+ * @param { Interceptor['catch'] } [interceptors.catch] - 失败拦截器，传入错误对象。
+ * @param { Interceptor['finally'] } [interceptors.finally] - 成功失败都会运行的拦截器，没有传入值。
+ * @return { RequestMainFunc } 返回使用了拦截器的请求函数。参数和request方法一样。
  */
-u.create=function(e){return void 0===e&&(e={}),c.createInterceptor.call(u,e)}},524:(e,t,r)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.createJsonp=t.requestJsonp=void 0;var n=r(547),o=function(e,t){void 0===t&&(t={callbackNameProperty:"callback"}),t.callbackName=t.callbackName||"__"+(1e11*Math.random()+1e11).toString(32).replaceAll(".","_");var r=document.createElement("script");return r.type="text/javascript",(t.cancel||t.timeout)&&(t.cancel=t.cancel||{},t.cancel.abort=function(){delete window[t.callbackName],r.remove(),r=null}),t.timeout&&setTimeout(t.cancel.abort,t.timeout),new Promise((function(o,a){try{window[t.callbackName]=o,r.src="".concat(e,"?").concat(t.callbackNameProperty||"callback","=").concat(t.callbackName),t.body&&(r.src,(0,n.toParams)(t.body)),document.head.appendChild(r)}catch(e){a(e)}})).finally((function(){delete window[t.callbackName],r.remove(),r=null}))};
+l.create=function(e){return void 0===e&&(e={}),c.createInterceptor.call(l,e)}},524:(e,t,r)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.createJsonp=t.requestJsonp=void 0;var n=r(547),o=function(e,t){void 0===t&&(t={callbackNameProperty:"callback"}),t.callbackName=t.callbackName||"__"+(1e11*Math.random()+1e11).toString(32).replaceAll(".","_");var r=document.createElement("script");return r.type="text/javascript",(t.cancel||t.timeout)&&(t.cancel=t.cancel||{},t.cancel.abort=function(){delete window[t.callbackName],r.remove(),r=null}),t.timeout&&setTimeout(t.cancel.abort,t.timeout),new Promise((function(o,a){try{window[t.callbackName]=o,r.src="".concat(e,"?").concat(t.callbackNameProperty||"callback","=").concat(t.callbackName),t.body&&(r.src,(0,n.toParams)(t.body)),document.head.appendChild(r)}catch(e){a(e)}})).finally((function(){delete window[t.callbackName],r.remove(),r=null}))};
 /**
  * @Author: sonion
  * @msg: Promise风格的jsonp版本的网络请求
@@ -51,63 +51,60 @@ XMLHttpRequest.prototype.getResponseHeaders=function(){var e=this.getAllResponse
 /**
  * @Author: sonion
  * @msg: xhr主要请求部分封装
- * @param {object} options - 请求参数对象
+ * @param { RequestOptions } options - 请求参数对象
  * @param {string} options.url - 请求地址
- * @param {string} [options.method] - 请求的方法，默认为'GET'
- * @param {object} [options.headers] - 请求头，默认为空对象
- * @param {object} [options.body] - 请求体
- * @param {number} [options.timeout=0] - 超时时间(毫秒)，默认为0(xhr不限制)
- * @param {object} [options.cancel] - 取消对象(外部传入，写入取消方法)
- * @param {'text'|'json'|'blob'|'arrayBuffer'} [options.resType] - 手动设置返回类型
- * @param {function} [options.onProgress] - 返回进度回调(参数1:已返回字节, 参数2:总字节)
- * @param {function} [options.upProgress] - 上传进度回调(参数1:已返回字节, 参数2:总字节)
- * @return {Promise} 返回promise对象
+ * @param { RequestOptions['method'] } [options.method='GET'] - 请求的方法，可选，默认为'GET'
+ * @param { RequestOptions['headers'] } [options.headers={}] - 请求头，可选，默认为空对象
+ * @param { RequestOptions['body'] } [options.body] - 请求体，可选
+ * @param { RequestOptions['timeout'] } [options.timeout=0] - 超时时间(毫秒)，可选。默认为0(xhr不限制)
+ * @param { RequestOptions['cancel'] } [options.cancel] - 取消对象(外部传入，用于添加取消请求的方法：abort)，可选
+ * @param { RequestOptions['resType'] } [options.resType] - 手动设置返回类型，可选 blob、arrayBuffer可手动指定。
+ * @param { RequestOptions['onProgress'] } [options.onProgress] - 返回进度回调(参数1:已返回字节, 参数2:总字节)，可选
+ * @param { RequestOptionsPlus['upProgress'] } [options.upProgress] - 上传进度回调(参数1:已返回字节, 参数2:总字节)，可选
+ * @return { RequestPromiseReturned } 返回Promise<{status: number, headers: Headers, data: any}>。
+ * @property status - 响应状态。没有错误是200。
+ * @property headers - 服务器响应头
+ * @property [data] - 服务器响应数据。有错误的时候不存在该属性。
  */
 var i=function(e){var t=e.url,r=e.headers,n=e.method,o=e.body,a=e.timeout,i=e.cancel,c=e.upProgress,u=e.onProgress,l=e.resType,f=e.credentials;return new Promise((function(e,d){var p=new XMLHttpRequest;if(p.open(n,t,!0),r)for(var h=0,y=Object.entries(r);h<y.length;h++){var v=y[h],b=v[0],g=v[1];p.setRequestHeader(b,g)}"blob"===l&&(p.responseType="blob"),"string"==typeof l&&"arraybuffer"===l.toLowerCase()&&(p.responseType="arraybuffer"),p.timeout=a,"include"===f&&(p.withCredentials=!0),p.onload=function(t){var r=p.getResponseHeaders();200!==p.status&&e({status:p.status,headers:r,msg:p.statusText||"网络请求错误"});var n,o=p.getResponseHeader("content-type")||"";n="json"===(l=(0,s.getResponseType)(l,o))?JSON.parse(p.response):"text"===l?p.responseText:p.response,e({status:p.status,headers:r,data:n})},p.onabort=function(e){d({code:-1,msg:p.statusText||"请求取消"})},p.ontimeout=function(e){d({code:-1,msg:p.statusText||"响应超时"})},p.onerror=function(e){d({code:-1,msg:p.statusText||"未知错误"})},i&&(i.abort=function(){p.abort(),i.isCancelled=!0}),u&&(p.onprogress=function(e){u(e.loaded,e.total)}),c&&(p.upload.onprogress=function(e){c(e.loaded,e.total)}),p.send(o)}))},c=function(e,t){var r,a;return e=(r=(0,n.requestParamsHandle)(e,t)).url,(a=r.options).url=e,(0,o._requestRetry)(a,i)};
 /**
  * @Author: sonion
  * @msg: xhr请求基础封装
- * @param {string} url - 请求地址
- * @param {object} [options] - 请求的选项参数，可选
- * @param {string} [options.method='GET'] - 请求的方法，可选，默认为'GET'
- * @param {object} [options.headers={}] - 请求头，可选，默认为空对象
- * @param {object} [options.body] - 请求体，可选
- * @param {number} [options.timeout=0] - 超时时间(毫秒)，可选，默认为0(xhr不限制)
- * @param {object} [options.cancel] - 取消对象(外部传入，用于添加取消请求的方法：abort)，可选
- * @param {number} [options.maxRetries=0] - 最大重试次数，可选，默认0(不重试)
- * @param {'text'|'json'|'blob'|'arrayBuffer'} [options.resType] - 手动设置返回类型，可选。blob必须手动指定
- * @param {function} [options.onProgress] - 返回进度回调(参数1:已返回字节, 参数2:总字节)，可选
- * @param {function} [options.upProgress] - 上传进度回调(参数1:已返回字节, 参数2:总字节)，可选
- * @return {Promise} 返回Promise<{status: number, data: Blob, msg: string, headers: Headers}>。
+ * @param { string } url - 请求url
+ * @param { RequestOptions } [options] - 请求参数对象，可选
+ * @param { RequestOptions['method'] } [options.method='GET'] - 请求的方法，可选，默认为'GET'
+ * @param { RequestOptions['headers'] } [options.headers={}] - 请求头，可选，默认为空对象
+ * @param { RequestOptions['body'] } [options.body] - 请求体，可选
+ * @param { RequestOptions['timeout'] } [options.timeout=0] - 超时时间(毫秒)，可选。默认为0(xhr不限制)
+ * @param { RequestOptions['cancel'] } [options.cancel] - 取消对象(外部传入，用于添加取消请求的方法：abort)，可选
+ * @param { RequestOptions['maxRetries'] } [options.maxRetries=0] - 最大重试次数，可选，默认0(不重试)
+ * @param { RequestOptions['resType'] } [options.resType] - 手动设置返回类型，可选 blob、arrayBuffer可手动指定。
+ * @param { RequestOptions['onProgress'] } [options.onProgress] - 返回进度回调(参数1:已返回字节, 参数2:总字节)，可选
+ * @param { RequestOptionsPlus['upProgress'] } [options.upProgress] - 上传进度回调(参数1:已返回字节, 参数2:总字节)，可选
+ * @return { RequestPromiseReturned } 返回Promise<{status: number, headers: Headers, data: any}>。
  * @property status - 响应状态。没有错误是200。
  * @property headers - 服务器响应头
- * @property [data] - 服务器响应数据。有错误的时候不存在改属性。
- * @property [msg] - 提示信息。没有出错一般没有改属性
+ * @property [data] - 服务器响应数据。有错误的时候不存在该属性。
  */t.requestXhr=c,
 /**
  * @Author: sonion
  * @msg: 创建一个具有拦截器的xhr请求
- * @param {object} interceptors - 拦截器对象
- * @param {function} [interceptors.request] - 请求拦截器，传入请求参数数组。请求拦截器必须返回一个包含url和options的对象
- * @param {function} [interceptors.response] - 响应拦截器，传入响应数据。返回值不可为空
- * @param {function} [interceptors.catch] - 失败拦截器，传入错误对象。
- * @param {function} [interceptors.finally] - 成功失败都会运行的拦截器，没有传入值。
- * @return {function} 返回使用了拦截器的请求函数。参数和requestXhr方法一样。
+ * @param { Interceptor } interceptors - 拦截器对象
+ * @param { Interceptor['request'] } [interceptors.request] - 请求拦截器，传入请求参数数组。请求拦截器必须返回一个包含url和options的对象
+ * @param { Interceptor['response'] } [interceptors.response] - 响应拦截器，传入响应数据。返回值不可为空
+ * @param { Interceptor['catch'] } [interceptors.catch] - 失败拦截器，传入错误对象。
+ * @param { Interceptor['finally'] } [interceptors.finally] - 成功失败都会运行的拦截器，没有传入值。
+ * @return { RequestMainFunc } 返回使用了拦截器的请求函数。参数和requestXhr方法一样。
  */
 c.create=function(e){return void 0===e&&(e={}),a.createInterceptor.call(c,e)}},343:(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.createTokenManager=t.cookie=void 0;
 /**
  * @Author: sonion
  * @msg: cookie操作对象
- * @return {{
- *  getItem: (key: string)=>string,
- *  setItem: (key: string, value: string, expires?: Date)=>Boolean,
- *  removeItem: (key: string)=>string,
- *  clear: ()=>undefined
- * }}
- * @property {Function} getItem - 获取key对应的cookie
- * @property {Function} setItem - 写入cookie
- * @property {Function} removeItem - 移除cookie
- * @property {Function} clear - 清空cookie
+ * @return { CookieStorage }
+ * @property { CookieStorage['getItem'] } getItem - 获取key对应的cookie
+ * @property { CookieStorage['setItem'] } setItem - 写入cookie
+ * @property { CookieStorage['removeItem'] } removeItem - 移除cookie
+ * @property { CookieStorage['clear'] } clear - 清空cookie
  */
 var r={
 /**
@@ -172,7 +169,7 @@ var a=function(e,t){if(1===(null==e?void 0:e.length))return e[0];var r=new Uint8
 /**
  * @Author: sonion
  * @msg: 并发控制函数
- * @param {RequestFunc} requestFunc - 请求方法
+ * @param {Requestor} requestFunc - 请求方法
  * @param {Array} tasks - 请求参数对象数组
  * @param {number} maxNum - 最大并发数
  * @return {Promise<unknown>} - 返回请求Promise数组的Promise
@@ -191,4 +188,4 @@ var n=function(e){return null===e?"null":"object"!=typeof e?typeof e:Array.isArr
  * @msg: 获取元素的数据类型
  * @param {any} anyData - 要获取类型的
  * @return {string} - 基本类型返回小写的类型字符串(同typeof)。数组返回'Array',其他引用类型返回Symbol.toStringTag属性值
- */t.getType=n,n.regExp=/^\[[a-z]+ ([A-Za-z]+)\]$/}},t={};function r(n){var o=t[n];if(void 0!==o)return o.exports;var a=t[n]={exports:{}};return e[n].call(a.exports,a,a.exports,r),a.exports}var n={};(()=>{var e=n;Object.defineProperty(e,"__esModule",{value:!0}),e.concurrencyRequest=e.requestSse=e.createJsonp=e.requestJsonp=e.requestEasy=e.requestXhr=e.createResponsePreset=e.createInterceptorsPreset=e.createTokenManager=e.cookie=e.request=e.createFormData=e.toParams=void 0;var t=r(547);Object.defineProperty(e,"toParams",{enumerable:!0,get:function(){return t.toParams}});var o=r(343);Object.defineProperty(e,"cookie",{enumerable:!0,get:function(){return o.cookie}}),Object.defineProperty(e,"createTokenManager",{enumerable:!0,get:function(){return o.createTokenManager}});var a=r(746);Object.defineProperty(e,"request",{enumerable:!0,get:function(){return a.request}});var s=r(232);Object.defineProperty(e,"requestEasy",{enumerable:!0,get:function(){return s.requestEasy}}),Object.defineProperty(e,"requestXhr",{enumerable:!0,get:function(){return s.requestXhr}});var i=r(524);Object.defineProperty(e,"createJsonp",{enumerable:!0,get:function(){return i.createJsonp}}),Object.defineProperty(e,"requestJsonp",{enumerable:!0,get:function(){return i.requestJsonp}});var c=r(505);Object.defineProperty(e,"requestSse",{enumerable:!0,get:function(){return c.requestSse}});var u=r(199);Object.defineProperty(e,"createInterceptorsPreset",{enumerable:!0,get:function(){return u.createInterceptorsPreset}});var l=r(164);Object.defineProperty(e,"createResponsePreset",{enumerable:!0,get:function(){return l.createResponsePreset}});var f=r(562);Object.defineProperty(e,"createFormData",{enumerable:!0,get:function(){return f.createFormData}});var d=r(59);Object.defineProperty(e,"concurrencyRequest",{enumerable:!0,get:function(){return d.concurrencyRequest}})})(),module.exports=n})();
+ */t.getType=n,n.regExp=/^\[[a-z]+ ([A-Za-z]+)\]$/}},t={};function r(n){var o=t[n];if(void 0!==o)return o.exports;var a=t[n]={exports:{}};return e[n].call(a.exports,a,a.exports,r),a.exports}var n={};(()=>{var e=n;Object.defineProperty(e,"__esModule",{value:!0}),e.concurrencyRequest=e.requestSse=e.createJsonp=e.requestJsonp=e.requestEasy=e.requestXhr=e.createResponsePreset=e.createInterceptorsPreset=e.createTokenManager=e.cookie=e.request=e.createFormData=e.toParams=void 0;var t=r(547);Object.defineProperty(e,"toParams",{enumerable:!0,get:function(){return t.toParams}});var o=r(343);Object.defineProperty(e,"cookie",{enumerable:!0,get:function(){return o.cookie}}),Object.defineProperty(e,"createTokenManager",{enumerable:!0,get:function(){return o.createTokenManager}});var a=r(746);Object.defineProperty(e,"request",{enumerable:!0,get:function(){return a.request}});var s=r(232);Object.defineProperty(e,"requestEasy",{enumerable:!0,get:function(){return s.requestEasy}}),Object.defineProperty(e,"requestXhr",{enumerable:!0,get:function(){return s.requestXhr}});var i=r(524);Object.defineProperty(e,"createJsonp",{enumerable:!0,get:function(){return i.createJsonp}}),Object.defineProperty(e,"requestJsonp",{enumerable:!0,get:function(){return i.requestJsonp}});var c=r(505);Object.defineProperty(e,"requestSse",{enumerable:!0,get:function(){return c.requestSse}});var u=r(199);Object.defineProperty(e,"createInterceptorsPreset",{enumerable:!0,get:function(){return u.createInterceptorsPreset}});var l=r(880);Object.defineProperty(e,"createResponsePreset",{enumerable:!0,get:function(){return l.createResponsePreset}});var f=r(562);Object.defineProperty(e,"createFormData",{enumerable:!0,get:function(){return f.createFormData}});var d=r(59);Object.defineProperty(e,"concurrencyRequest",{enumerable:!0,get:function(){return d.concurrencyRequest}})})(),module.exports=n})();

@@ -1,6 +1,6 @@
 {
   "name": "fetchok",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "This is a JavaScript network request encapsulation that is only intended for personal use.",
   "type": "module",
   "main": "dist/index.wxApplet.cjs.js",
@@ -41,8 +41,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "types": "npx -p typescript tsc",
-    "push": "npm publish && git push -u origin main"
+    "types": "npx -p typescript tsc"
   },
   "devDependencies": {
     "text-decoding": "^1.0.0",

@@ -11,6 +11,7 @@ declare type ReplaceType<T, K> = {
 
 // 取出其中一项工具类
 declare type PickOne<T, K extends keyof T> = Pick<T, K>[K];
+// 获取Promise返回值类型
 
 
 // =====>请求部分类型<=====
@@ -33,7 +34,7 @@ export type OptionsBodyFirst = { [key: string]: any };
 export type OptionsBody = OptionsBodyFirst| GlobalFormData | string;
 
 // 请求参数类型
-export type ParamOptions<T = OptionsBody> = {
+export type RequestOptions<T = OptionsBody> = {
   // HEAD: 无响应体、CONNECT: 建立资源隧道、TRACE: 测试、PATCH: 部分修改
   method?: "HEAD" | "OPTION" | "CONNECT" | "POST" | "GET" | "PUT" | "DELETE" | "TRACE" | "PATCH", // 请求方法
   headers?: HeadersObject | GlobalHeaders, // 请求头
@@ -51,14 +52,6 @@ export type ParamOptions<T = OptionsBody> = {
   [key: string]: any // 给一个可能的其他属性
 }
 
-
-// declare type RequestFailedResult = Omit<RequestSuccessResult, 'status'> & { code: number };
-
-// 自定义 扩展Error对象类型
-// export interface CustomError extends Error {
-//   status?: number;
-// }
-
 // 请求成功返回的内容类型-resolve
 export type RequestSuccessResult = {
   status: number,
@@ -67,7 +60,7 @@ export type RequestSuccessResult = {
 }
 
 // 服务端错误返回类型-resolve
-declare type RequestFailedResult = Omit<RequestSuccessResult, 'data'> & { msg: string };
+export type RequestFailedResult = Omit<RequestSuccessResult, 'data'> & { msg: string };
 
 // 自定义 扩展Error对象类型-reject
 export interface CustomError extends Error {
@@ -79,20 +72,20 @@ export interface CustomError extends Error {
 export type RequestPromiseReturned = Promise<RequestSuccessResult | RequestFailedResult | CustomError>;
 
 // 有上传进度请求的参数
-export type ParamOptionsPlus = ParamOptions & { upProgress?:  PickOne<ParamOptions, 'onProgress'> };
+export type RequestOptionsPlus = RequestOptions & { upProgress?:  PickOne<RequestOptions, 'onProgress'> };
 
 // 请求函数本身类型 还要用接口继承它，再扩展
-export type RequestMainFunc = (url: string, options?: ParamOptions | ParamOptionsPlus) => RequestPromiseReturned;
+export type RequestMainFunc = (url: string, options?: RequestOptions | RequestOptionsPlus) => RequestPromiseReturned;
 
 // 请求函数类型
-export interface RequestFunc extends RequestMainFunc {
+export interface Requestor extends RequestMainFunc {
   create: CreateInterceptorFunc;
 }
 
 
 // =========>拦截器类型部分<=========
 // 创建拦截器函数类型//
-export type CreateInterceptorFunc = (interceptors: InterceptorsObject) => RequestMainFunc;
+export type CreateInterceptorFunc = (interceptors: Interceptor) => RequestMainFunc;
 
 // token管理器类型
 export type TokenManager = {
@@ -106,31 +99,30 @@ export type TokenManager = {
 }
 
 // 拦截器对象类型
-export type InterceptorsObject = {
-  request?: (url: string, options: ParamOptions)=>[url: string, options: ParamOptions],
+export type Interceptor = {
+  request?: (url: string, options: RequestOptions)=>[url: string, options: RequestOptions],
   response?: (res: RequestSuccessResult | RequestFailedResult)=>RequestSuccessResult | Blob | string | unknown, // 拦截器返回值，其实还可能有
   catch?: (err: RequestFailedResult | CustomError)=>RequestFailedResult | CustomError,
-  finally?: ()=>void,
-  tokenManager?: TokenManager
+  finally?: ()=>void
 }
 
 
 // =========>参数整理本分<=========
 // 请求参数梳理函数处理后的options类型
-export type ProcessedOptions = ReplaceType<ParamOptions, {body?: string}>;
+export type ProcessedOptions = ReplaceType<RequestOptions, {body?: string}>;
 
 // 处理后的参数加url的类型。因为要和node:http一样，统一为一个参数
 declare type ProcessedOptionsPlusUrl = ProcessedOptions & {url?: string}
 
 // 请求参数梳理函数类型
-declare type RequestParamsHandleFunc = (url: string, options: ParamOptions)=> { 
+declare type RequestParamsHandleFunc = (url: string, options: RequestOptions)=> { 
   url: string, options: ProcessedOptions
 };
 
 
 // =========>node:http、xhr公共部分<=========
 // node:http请求参数
-export type ParamOptionsHttp = MyOmit<ParamOptions, 'body'> & {
+export type RequestOptionsHttp = MyOmit<RequestOptions, 'body'> & {
   port: number,
   hostname: string,
   path: string,
@@ -138,9 +130,9 @@ export type ParamOptionsHttp = MyOmit<ParamOptions, 'body'> & {
 };
 
 // node:http、xhr、wx.request内部函数_request的类型
-export type RequestMainFuncHttpXhrWx = (options: ParamOptionsHttp | ProcessedOptionsPlusUrl) => ReturnType<RequestMainFunc>;
+export type RequestMainFuncHttpXhrWx = (options: RequestOptionsHttp | ProcessedOptionsPlusUrl) => ReturnType<RequestMainFunc>;
 
 
 // =========> 工具类型 <=============
 // 判断content-type是否是application/json函数类型
-export type IsContentType = (headers: ParamOptions['headers'], contentType: string)=>boolean;
+export type IsContentType = (headers: RequestOptions['headers'], contentType: string)=>boolean;

@@ -1,4 +1,4 @@
-import { ParamOptions, HeadersObject } from '../../../types';
+import { RequestOptions, HeadersObject } from '../../../types';
 /**
  * @Author: sonion
  * @msg: 获取content-type、content-length
@@ -16,9 +16,9 @@ declare const getObjectHeadersKey: (headers: HeadersObject) => {
  * @param {object} options - 请求参数
  * @return {object}
  */
-declare const requestParamsHandle: (url: string, options: ParamOptions) => {
+declare const requestParamsHandle: (url: string, options: RequestOptions) => {
     url: string;
-    options: import("../../../types").ReplaceType<ParamOptions<import("../../../types").OptionsBody>, {
+    options: import("../../../types").ReplaceType<RequestOptions<import("../../../types").OptionsBody>, {
         body?: string;
     }>;
 };

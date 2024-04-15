@@ -1,21 +1,21 @@
-import type { RequestSuccessResult, RequestFailedResult, CustomError, InterceptorsObject } from '../../types';
+import type { RequestSuccessResult, RequestFailedResult, CustomError, Interceptor } from '../../types';
 import { getType } from '../utils/util'
 
 
-// 请求成功的响应拦截器callback 设置参数可能用到，该导出
+// 请求成功的响应拦截器callback 设置参数可能用到
 export type RequestSuccessCallback = (res: RequestSuccessResult | RequestFailedResult)=>any;
 // 响应拦截器
-export type RespInterceptors = Required<Omit<InterceptorsObject, 'request' | 'finally' | 'tokenManager'>>
-// 响应拦截器
-export type CreateRespInterceptorsPreset = (callback?: RequestSuccessCallback)=>RespInterceptors;
+export type RespInterceptors = Required<Omit<Interceptor, 'request' | 'finally' | 'tokenManager'>>
+// 创建响应拦截器函数类型
+export type CreateRespInterceptorsPreset = typeof createResponsePreset;
 
 /**
  * @Author: sonion
  * @msg: 创建响应拦截器预设
- * @param {function} [callback] - 可以传一个函数，会传入响应值。会返回该函数返回值，如没有则返回服务端响应值
- * @return {any}
+ * @param {RequestSuccessCallback} [callback] - 可以传一个函数，会传入响应值。会返回该函数返回值，如没有则返回服务端响应值
+ * @return {RespInterceptors}
  */
-const createResponsePreset: CreateRespInterceptorsPreset = (callback?: RequestSuccessCallback ): RespInterceptors=>{
+const createResponsePreset = (callback?: RequestSuccessCallback ): RespInterceptors=>{
   return {
     // 响应拦截器，利用解构
     response: ({ status, headers, ...resp })=>{

@@ -1,15 +1,15 @@
-import type { MyOmit, ParamOptions, OptionsBodyFirst } from '../../types'
+import type { MyOmit, RequestOptions, OptionsBodyFirst } from '../../types'
 import { toParams } from "../utils/util"
 
 
 // 用于sse的请求参数
-export type ParamOptionsSse = MyOmit<ParamOptions, 'method' | 'headers' | 'body' | 'onProgress' | 'resType' | 'maxRetries' | 'signal'> & {
+export type RequestOptionsSse = MyOmit<RequestOptions, 'method' | 'headers' | 'body' | 'onProgress' | 'resType' | 'maxRetries' | 'signal'> & {
   handler?: (events: Event)=>any,
   body: OptionsBodyFirst
 }
 
 // sse请求函数类型
-export type RequestFuncSse = (url: string, options: ParamOptionsSse)=>EventSource;
+export type RequestorSse = (url: string, options: RequestOptionsSse)=>EventSource;
 
 /**
  * @Author: sonion
@@ -21,7 +21,7 @@ export type RequestFuncSse = (url: string, options: ParamOptionsSse)=>EventSourc
  * @param {function} [options.handle] - 事件message的处理函数，可选。也可以用返回值注册事件。
  * @return {EventSource}  EventSource对象，addEventListener注册message事件
  */
-const requestSse: RequestFuncSse = (url: string, options = {} as Parameters<RequestFuncSse>[1]): EventSource=>{
+const requestSse: RequestorSse = (url: string, options = {} as Parameters<RequestorSse>[1]): EventSource=>{
   if (options.credentials && options.credentials === 'include') options.withCredentials = true;
   if (options.body) url += '?' + toParams(options.body); // 在url链接后拼参数
   const sse = new EventSource(url, options as EventSourceInit);

@@ -1,4 +1,4 @@
-import type { OptionsBodyFirst, ParamOptions, IsContentType, RequestParamsHandleFunc } from "../../../types";
+import type { OptionsBodyFirst, RequestOptions, IsContentType, RequestParamsHandleFunc } from "../../../types";
 import { toParams, getType } from "../util";
 
 
@@ -11,7 +11,7 @@ import { toParams, getType } from "../util";
  * @return {{url: string, options: object}} 返回GET状态下拼接完参数的url
  */
 const requestParamsAfterHandle = (
-  url: string, options: ParamOptions, validateContentType: IsContentType
+  url: string, options: RequestOptions, validateContentType: IsContentType
   ): ReturnType<RequestParamsHandleFunc> => {
   options = {
     method: "GET",
@@ -20,7 +20,7 @@ const requestParamsAfterHandle = (
     maxRetries: 0, // 最大重试次数 默认不重试
     ...options,
   };
-  options.method = options.method.toUpperCase() as ParamOptions['method']; // 防止强行传小写
+  options.method = options.method.toUpperCase() as RequestOptions['method']; // 防止强行传小写
   if (options.resType && !['text', 'json', 'blob', 'arrayBuffer'].includes(options.resType)) delete options.resType; // 手动指定了，却不在选项中就删除
   let body: string; // 准备在非GET时用
   if (getType(options.body) === 'Object'){

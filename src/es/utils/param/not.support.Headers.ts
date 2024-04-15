@@ -1,4 +1,4 @@
-import { ParamOptions, HeadersObject } from '../../../types'
+import { RequestOptions, HeadersObject } from '../../../types'
 import { contentTypeRegExp, contentLengthRegExp } from '../util'
 import { requestParamsAfterHandle } from './generic.util'
 
@@ -37,7 +37,7 @@ const _validateContentTypeMethod = (headers: HeadersObject, contentType: string,
  * @param {object} options - 请求参数
  * @return {object}
  */
-const requestParamsHandle = (url: string, options: ParamOptions)=>{
+const requestParamsHandle = (url: string, options: RequestOptions)=>{
   let _validateContentType
   if (options?.headers){
     const {contentType} = getObjectHeadersKey(options.headers as HeadersObject);

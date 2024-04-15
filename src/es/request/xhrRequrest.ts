@@ -1,6 +1,6 @@
 import type { 
-  ParamOptions, ParamOptionsPlus, ProcessedOptionsPlusUrl, ProcessedOptions,
-  RequestMainFunc, RequestPromiseReturned, RequestFunc, InterceptorsObject,
+  RequestOptions, RequestOptionsPlus, ProcessedOptionsPlusUrl, ProcessedOptions,
+  RequestMainFunc, RequestPromiseReturned, Requestor, Interceptor,
 } from '../../types'
 import { requestParamsHandle } from '../utils/param/support.Headers';
 import { _requestRetry } from '../utils/retry.util'
@@ -40,12 +40,12 @@ declare global {
 
 
 // easy请求参数
-export type ParamOptionsEasy = Omit<ParamOptions, 'onProgress' | 'resType' | 'maxRetries' | 'signal' | 'cancel' | 'timeout' | 'credentials'>
+export type RequestOptionsEasy = Omit<RequestOptions, 'onProgress' | 'resType' | 'maxRetries' | 'signal' | 'cancel' | 'timeout' | 'credentials'>
 
   // requestEasy的类型定义
-export type RequestFuncEasy = (
+export type RequestorEasy = (
   url: string, 
-  options: ParamOptionsEasy,
+  options: RequestOptionsEasy,
 )=>Promise<unknown>;
 
 /**
@@ -58,7 +58,7 @@ export type RequestFuncEasy = (
  * @param {object} [options.body] - 请求体数据
  * @return {Promise} 返回结果没有任何封装Promise<xhr.response>
  */
-const requestEasy: RequestFuncEasy = (url, { method = 'GET', headers, body } = { method: 'GET'}) => {
+const requestEasy: RequestorEasy = (url, { method = 'GET', headers, body } = { method: 'GET'}) => {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
@@ -93,17 +93,20 @@ const requestEasy: RequestFuncEasy = (url, { method = 'GET', headers, body } = {
 /**
  * @Author: sonion
  * @msg: xhr主要请求部分封装
- * @param {object} options - 请求参数对象
+ * @param { RequestOptions } options - 请求参数对象
  * @param {string} options.url - 请求地址
- * @param {string} [options.method] - 请求的方法，默认为'GET'
- * @param {object} [options.headers] - 请求头，默认为空对象
- * @param {object} [options.body] - 请求体
- * @param {number} [options.timeout=0] - 超时时间(毫秒)，默认为0(xhr不限制)
- * @param {object} [options.cancel] - 取消对象(外部传入，写入取消方法)
- * @param {'text'|'json'|'blob'|'arrayBuffer'} [options.resType] - 手动设置返回类型
- * @param {function} [options.onProgress] - 返回进度回调(参数1:已返回字节, 参数2:总字节)
- * @param {function} [options.upProgress] - 上传进度回调(参数1:已返回字节, 参数2:总字节)
- * @return {Promise} 返回promise对象
+ * @param { RequestOptions['method'] } [options.method='GET'] - 请求的方法，可选，默认为'GET'
+ * @param { RequestOptions['headers'] } [options.headers={}] - 请求头，可选，默认为空对象
+ * @param { RequestOptions['body'] } [options.body] - 请求体，可选
+ * @param { RequestOptions['timeout'] } [options.timeout=0] - 超时时间(毫秒)，可选。默认为0(xhr不限制)
+ * @param { RequestOptions['cancel'] } [options.cancel] - 取消对象(外部传入，用于添加取消请求的方法：abort)，可选
+ * @param { RequestOptions['resType'] } [options.resType] - 手动设置返回类型，可选 blob、arrayBuffer可手动指定。
+ * @param { RequestOptions['onProgress'] } [options.onProgress] - 返回进度回调(参数1:已返回字节, 参数2:总字节)，可选
+ * @param { RequestOptionsPlus['upProgress'] } [options.upProgress] - 上传进度回调(参数1:已返回字节, 参数2:总字节)，可选
+ * @return { RequestPromiseReturned } 返回Promise<{status: number, headers: Headers, data: any}>。
+ * @property status - 响应状态。没有错误是200。
+ * @property headers - 服务器响应头
+ * @property [data] - 服务器响应数据。有错误的时候不存在该属性。
  */
 const _request = ({
   url, headers, method, body, timeout, cancel, upProgress, onProgress, resType, credentials 
@@ -166,28 +169,26 @@ const _request = ({
   });
 }; // 请求部分
 
-
 /**
  * @Author: sonion
  * @msg: xhr请求基础封装
- * @param {string} url - 请求地址
- * @param {object} [options] - 请求的选项参数，可选
- * @param {string} [options.method='GET'] - 请求的方法，可选，默认为'GET'
- * @param {object} [options.headers={}] - 请求头，可选，默认为空对象
- * @param {object} [options.body] - 请求体，可选
- * @param {number} [options.timeout=0] - 超时时间(毫秒)，可选，默认为0(xhr不限制)
- * @param {object} [options.cancel] - 取消对象(外部传入，用于添加取消请求的方法：abort)，可选
- * @param {number} [options.maxRetries=0] - 最大重试次数，可选，默认0(不重试)
- * @param {'text'|'json'|'blob'|'arrayBuffer'} [options.resType] - 手动设置返回类型，可选。blob必须手动指定
- * @param {function} [options.onProgress] - 返回进度回调(参数1:已返回字节, 参数2:总字节)，可选
- * @param {function} [options.upProgress] - 上传进度回调(参数1:已返回字节, 参数2:总字节)，可选
- * @return {Promise} 返回Promise<{status: number, data: Blob, msg: string, headers: Headers}>。
+ * @param { string } url - 请求url
+ * @param { RequestOptions } [options] - 请求参数对象，可选
+ * @param { RequestOptions['method'] } [options.method='GET'] - 请求的方法，可选，默认为'GET'
+ * @param { RequestOptions['headers'] } [options.headers={}] - 请求头，可选，默认为空对象
+ * @param { RequestOptions['body'] } [options.body] - 请求体，可选
+ * @param { RequestOptions['timeout'] } [options.timeout=0] - 超时时间(毫秒)，可选。默认为0(xhr不限制)
+ * @param { RequestOptions['cancel'] } [options.cancel] - 取消对象(外部传入，用于添加取消请求的方法：abort)，可选
+ * @param { RequestOptions['maxRetries'] } [options.maxRetries=0] - 最大重试次数，可选，默认0(不重试)
+ * @param { RequestOptions['resType'] } [options.resType] - 手动设置返回类型，可选 blob、arrayBuffer可手动指定。
+ * @param { RequestOptions['onProgress'] } [options.onProgress] - 返回进度回调(参数1:已返回字节, 参数2:总字节)，可选
+ * @param { RequestOptionsPlus['upProgress'] } [options.upProgress] - 上传进度回调(参数1:已返回字节, 参数2:总字节)，可选
+ * @return { RequestPromiseReturned } 返回Promise<{status: number, headers: Headers, data: any}>。
  * @property status - 响应状态。没有错误是200。
  * @property headers - 服务器响应头
- * @property [data] - 服务器响应数据。有错误的时候不存在改属性。
- * @property [msg] - 提示信息。没有出错一般没有改属性
+ * @property [data] - 服务器响应数据。有错误的时候不存在该属性。
  */
-const requestXhr: RequestFunc = (url: string, options?: ParamOptionsPlus): RequestPromiseReturned => {
+const requestXhr: Requestor = (url: string, options?: RequestOptionsPlus): RequestPromiseReturned => {
   let processedParams: ProcessedOptions;
   ({url, options: processedParams } = requestParamsHandle(url, options)); // ts 不能直接赋值原 options 变量
   processedParams.url = url; // 合并url到请求参数中，在公共_requestRetry中好处理
@@ -197,14 +198,14 @@ const requestXhr: RequestFunc = (url: string, options?: ParamOptionsPlus): Reque
 /**
  * @Author: sonion
  * @msg: 创建一个具有拦截器的xhr请求
- * @param {object} interceptors - 拦截器对象
- * @param {function} [interceptors.request] - 请求拦截器，传入请求参数数组。请求拦截器必须返回一个包含url和options的对象
- * @param {function} [interceptors.response] - 响应拦截器，传入响应数据。返回值不可为空
- * @param {function} [interceptors.catch] - 失败拦截器，传入错误对象。
- * @param {function} [interceptors.finally] - 成功失败都会运行的拦截器，没有传入值。
- * @return {function} 返回使用了拦截器的请求函数。参数和requestXhr方法一样。
+ * @param { Interceptor } interceptors - 拦截器对象
+ * @param { Interceptor['request'] } [interceptors.request] - 请求拦截器，传入请求参数数组。请求拦截器必须返回一个包含url和options的对象
+ * @param { Interceptor['response'] } [interceptors.response] - 响应拦截器，传入响应数据。返回值不可为空
+ * @param { Interceptor['catch'] } [interceptors.catch] - 失败拦截器，传入错误对象。
+ * @param { Interceptor['finally'] } [interceptors.finally] - 成功失败都会运行的拦截器，没有传入值。
+ * @return { RequestMainFunc } 返回使用了拦截器的请求函数。参数和requestXhr方法一样。
  */
-requestXhr.create = (interceptors = {} as InterceptorsObject)=>{
+requestXhr.create = (interceptors: Interceptor = {}):RequestMainFunc=>{
   return createInterceptor.call(requestXhr, interceptors)
 };
 

@@ -1,10 +1,10 @@
-import type { MyOmit, ParamOptions, OptionsBodyFirst } from '../../types';
-export type ParamOptionsJsonp = MyOmit<ParamOptions, 'method' | 'headers' | 'body' | 'onProgress' | 'resType' | 'maxRetries' | 'signal'> & {
+import type { MyOmit, RequestOptions, OptionsBodyFirst } from '../../types';
+export type RequestOptionsJsonp = MyOmit<RequestOptions, 'method' | 'headers' | 'body' | 'onProgress' | 'resType' | 'maxRetries' | 'signal'> & {
     body: OptionsBodyFirst;
     callbackNameProperty?: string;
     callbackName?: string;
 };
-export type RequestFuncJsonp = (url: String, options?: ParamOptionsJsonp) => Promise<unknown>;
+export type RequestorJsonp = (url: String, options?: RequestOptionsJsonp) => Promise<unknown>;
 /**
  * @Author: sonion
  * @msg: Promise风格的jsonp版本的网络请求
@@ -16,12 +16,12 @@ export type RequestFuncJsonp = (url: String, options?: ParamOptionsJsonp) => Pro
  * @param {string} [options.callbackName] - 回调函数名-可选。不指定就自动生成
  * @return {Promise<unknown>} Promise<unknown>响应数据，未做封装
  */
-declare const requestJsonp: RequestFuncJsonp;
-export type CreateRequestFuncJsonp = () => RequestFuncJsonp;
+declare const requestJsonp: RequestorJsonp;
+export type CreateRequestorJsonp = () => RequestorJsonp;
 /**
  * @Author: sonion
  * @msg: 对于通过referrer判断的接口。通过该方法创建不受影响的jsonp请求方法
- * @return {Function}
+ * @return {RequestorJsonp}
  */
-declare const createJsonp: CreateRequestFuncJsonp;
+declare const createJsonp: CreateRequestorJsonp;
 export { requestJsonp, createJsonp };

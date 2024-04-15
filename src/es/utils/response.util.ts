@@ -1,4 +1,4 @@
-import type { ParamOptions, RequestSuccessResult } from '../../types';
+import type { RequestOptions, RequestSuccessResult } from '../../types';
 
 // 动态决定是否导入自定义TextDecoder
 (async ()=>{
@@ -33,7 +33,7 @@ const _mergedArrayBuffer = (res: ArrayBuffer[], total: number): ArrayBuffer=>{
 
 
 // 返回值处理函数类型
-type CreateResponseTypeHandle = (responseType: ParamOptions['resType'])=> [
+type CreateResponseTypeHandle = (responseType: RequestOptions['resType'])=> [
   {decode: (any)=>any} | TextDecoder, 
   (status: number, res: ArrayBuffer[], headers: Headers, total: number)=>RequestSuccessResult
 ];
@@ -44,7 +44,7 @@ type CreateResponseTypeHandle = (responseType: ParamOptions['resType'])=> [
  * @param {'json'|'text'|'blob'} responseType
  * @return {[object, function]}
  */
-const createResponseTypeHandle = (responseType: ParamOptions['resType']): ReturnType<CreateResponseTypeHandle >=>{
+const createResponseTypeHandle = (responseType: RequestOptions['resType']): ReturnType<CreateResponseTypeHandle >=>{
   let decoder
   if (responseType === 'text' || responseType === 'json'){
     decoder = new TextDecoder('utf-8')
@@ -83,7 +83,7 @@ const createResponseTypeHandle = (responseType: ParamOptions['resType']): Return
  * @param {string} resContentType - 响应头的contentType
  * @return {string}
  */
-const getResponseType = (userResType: ParamOptions['resType'], resContentType: string = ''): ParamOptions['resType']=>{
+const getResponseType = (userResType: RequestOptions['resType'], resContentType: string = ''): RequestOptions['resType']=>{
   if (userResType) return userResType
   else if (resContentType.startsWith("application/json")) return 'json'
   else if (resContentType.startsWith("text/")) return 'text'

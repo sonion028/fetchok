@@ -1,6 +1,6 @@
 import { toParams } from './es/utils/util'
 import { request } from './es/request/wxRequest'
-import { createResponsePreset } from './es/interceptors/responsePreset';
+import { createResponsePreset } from './es/interceptors/presetResponse';
 import { promisic } from './es/utils/wx.applet.util';
 import { concurrencyRequest } from './es/utils/retry.util'
 

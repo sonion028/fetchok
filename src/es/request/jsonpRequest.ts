@@ -1,17 +1,17 @@
-import type { MyOmit, ParamOptions, OptionsBodyFirst } from '../../types'
+import type { MyOmit, RequestOptions, OptionsBodyFirst } from '../../types'
 import { toParams } from "../utils/util"
 
 // jsonp请求参数
-export type ParamOptionsJsonp =  MyOmit<ParamOptions, 'method' | 'headers' | 'body' | 'onProgress' | 'resType' | 'maxRetries' | 'signal'> & {
+export type RequestOptionsJsonp =  MyOmit<RequestOptions, 'method' | 'headers' | 'body' | 'onProgress' | 'resType' | 'maxRetries' | 'signal'> & {
   body: OptionsBodyFirst,
   callbackNameProperty?: string, 
   callbackName?: string
 }
 
 // jsonp请求函数类型
-export type RequestFuncJsonp = (
+export type RequestorJsonp = (
   url: String,
-  options?: ParamOptionsJsonp
+  options?: RequestOptionsJsonp
   ) =>Promise<unknown>;
 
 /**
@@ -26,10 +26,10 @@ export type RequestFuncJsonp = (
  * @return {Promise<unknown>} Promise<unknown>响应数据，未做封装
  */
 
-const requestJsonp: RequestFuncJsonp = (
+const requestJsonp: RequestorJsonp = (
   url: string, 
-  options = {callbackNameProperty: 'callback'} as ParamOptionsJsonp
-  ): ReturnType<RequestFuncJsonp>=>{
+  options = {callbackNameProperty: 'callback'} as RequestOptionsJsonp
+  ): ReturnType<RequestorJsonp>=>{
   options.callbackName = options.callbackName || '__' + (Math.random() * 100000000000 + 100000000000).toString(32).replaceAll('.', '_'); // 随机函数名
   let tag = document.createElement('script');
   tag.type = "text/javascript";
@@ -60,14 +60,14 @@ const requestJsonp: RequestFuncJsonp = (
 
 
 // 创建请求函数的类型
-export type CreateRequestFuncJsonp = ()=>RequestFuncJsonp;
+export type CreateRequestorJsonp = ()=>RequestorJsonp;
 
 /**
  * @Author: sonion
  * @msg: 对于通过referrer判断的接口。通过该方法创建不受影响的jsonp请求方法
- * @return {Function}
+ * @return {RequestorJsonp}
  */
-const createJsonp: CreateRequestFuncJsonp = (): RequestFuncJsonp=>{
+const createJsonp: CreateRequestorJsonp = (): RequestorJsonp=>{
   const meta = document.createElement('meta');
   meta.name = 'referrer';
 	meta.content = 'no-referrer';

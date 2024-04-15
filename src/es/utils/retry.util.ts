@@ -1,10 +1,10 @@
-import type { ParamOptionsHttp, ProcessedOptions, RequestMainFuncHttpXhrWx, RequestMainFunc, 
-  RequestFunc, ParamOptions, RequestPromiseReturned } from "../../types";
+import type { RequestOptionsHttp, ProcessedOptions, RequestMainFuncHttpXhrWx, RequestMainFunc, 
+  Requestor, RequestOptions, RequestPromiseReturned } from "../../types";
 
 
 // node:http、xhr内部函数_sendRequest的类型
 type _requestRetryFunc = (
-  options: ParamOptionsHttp | ProcessedOptions,
+  options: RequestOptionsHttp | ProcessedOptions,
   _requestMain: RequestMainFuncHttpXhrWx
 )=>ReturnType<RequestMainFunc>;
 
@@ -35,9 +35,9 @@ const _requestRetry: _requestRetryFunc = async (options, _requestMain) => {
 
 
 // 任务数组类型
-type TaskList = {url: string, options: ParamOptions}[];
+type TaskList = {url: string, options: RequestOptions}[];
 // _run函数类型
-type _RunFunc<T> = (requestFunc: RequestFunc, tasks: TaskList, resultList: T, resolve: (value: T) => any)=>void
+type _RunFunc<T> = (requestFunc: Requestor, tasks: TaskList, resultList: T, resolve: (value: T) => any)=>void
 
 const _run: _RunFunc<RequestPromiseReturned[]> = (requestFunc, tasks, resultList, resolve)=>{
   const { url, options } = tasks.shift()
@@ -51,17 +51,17 @@ const _run: _RunFunc<RequestPromiseReturned[]> = (requestFunc, tasks, resultList
 }
 
 // 并发控制函数类型
-export type concurrencyRequestFunc = (requestFunc: RequestFunc, tasks: TaskList, maxNum: number)=>Promise<RequestPromiseReturned[]>;
+export type concurrencyRequestor = (requestFunc: Requestor, tasks: TaskList, maxNum: number)=>Promise<RequestPromiseReturned[]>;
 
 /**
  * @Author: sonion
  * @msg: 并发控制函数
- * @param {RequestFunc} requestFunc - 请求方法
+ * @param {Requestor} requestFunc - 请求方法
  * @param {Array} tasks - 请求参数对象数组
  * @param {number} maxNum - 最大并发数
  * @return {Promise<unknown>} - 返回请求Promise数组的Promise
  */
-const concurrencyRequest: concurrencyRequestFunc = (requestFunc: RequestFunc, tasks, maxNum: number = 5)=>{
+const concurrencyRequest: concurrencyRequestor = (requestFunc: Requestor, tasks, maxNum: number = 5)=>{
   if (!Array.isArray(tasks)) throw new Error('任务列表必须是一个数组');
   if (tasks.length === 0) return Promise.resolve([]);
   return new Promise(resolve=>{
@@ -70,7 +70,7 @@ const concurrencyRequest: concurrencyRequestFunc = (requestFunc: RequestFunc, ta
     for(let i = 0; i < min; i++){
       _run(requestFunc, tasks, resultList, resolve);
     }
-  }) as ReturnType<concurrencyRequestFunc>
+  }) as ReturnType<concurrencyRequestor>
 }
 
 

@@ -1,35 +1,39 @@
 import type { 
-  ProcessedOptions, RequestFunc,
-  RequestSuccessResult, RequestFailedResult, CustomError, // RequestPromiseReturned
-  InterceptorsObject } from '../../types'
+  ProcessedOptions, Requestor, RequestOptions,
+  CustomError, RequestPromiseReturned,
+  Interceptor, RequestMainFunc
+} from '../../types'
 // 请求参数处理
 import { requestParamsHandle } from "../utils/param/support.Headers";
 // 创建各类型响应处理函数
 import { createResponseTypeHandle, getResponseType } from '../utils/response.util'
 // 创建拦截器函数
 import { createInterceptor } from "../interceptors/create";
-import type { ParamOptions } from '../../types'
 
+
+// 这样可以解决返回async函数的返回值使用类型别名报错的问题。语法很怪，但就是可以。这是一个TS未处理的bug
+type RequestPromiseReturned2 = RequestPromiseReturned;
+const RequestPromiseReturned2 = Promise;
+// =====
 /**
  * @Author: sonion
  * @msg: fetch请求封装 - 除列以下参数外，其余未列出参数都按fetch参数
- * @param {string} url - 请求地址
- * @param {object} [options] - 请求的选项参数对象，可选
- * @param {string} [options.method='GET'] - 请求的方法，可选，默认为'GET'
- * @param {object} [options.headers={}] - 请求头，可选，默认为空对象
- * @param {object} [options.body] - 请求体，可选
- * @param {number} [options.timeout=0] - 超时时间(毫秒)，可选
- * @param {object} [options.cancel] - 取消对象(外部传入，用于添加取消请求的方法：abort)，可选
- * @param {number} [options.maxRetries=0] - 最大重试次数，可选，默认0(不重试)
- * @param {'text'|'json'|'blob'|'arrayBuffer'} [options.resType] - 手动设置返回类型，可选 blob、arrayBuffer可手动指定。
- * @param {function} [options.onProgress] - 返回进度回调(参数1:已返回字节, 参数2:总字节)，可选
- * @return {Promise<{status: number, headers: Headers, data?: any}>} 返回Promise<{status: number, headers: Headers, data: any, msg: string}>。
+ * @param { string } url - 请求地址
+ * @param { RequestOptions } [options] - 请求参数对象，可选
+ * @param { RequestOptions['method'] } [options.method='GET'] - 请求的方法，可选，默认为'GET'
+ * @param { RequestOptions['headers'] } [options.headers={}] - 请求头，可选，默认为空对象
+ * @param { RequestOptions['body'] } [options.body] - 请求体，可选
+ * @param { RequestOptions['timeout'] } [options.timeout=0] - 超时时间(毫秒)，可选
+ * @param { RequestOptions['cancel'] } [options.cancel] - 取消对象(外部传入，用于添加取消请求的方法：abort)，可选
+ * @param { RequestOptions['maxRetries'] } [options.maxRetries=0] - 最大重试次数，可选，默认0(不重试)
+ * @param { RequestOptions['resType'] } [options.resType] - 手动设置返回类型，可选 blob、arrayBuffer可手动指定。
+ * @param { RequestOptions['onProgress'] } [options.onProgress] - 返回进度回调(参数1:已返回字节, 参数2:总字节)，可选
+ * @return { RequestPromiseReturned } 返回Promise<{status: number, headers: Headers, data: any}>。
  * @property status - 响应状态。没有错误是200。
  * @property headers - 服务器响应头
  * @property [data] - 服务器响应数据。有错误的时候不存在该属性。
- * @property [msg] - 提示信息。没有出错一般没有改属性
  */
-const request: RequestFunc = async (url: string, options?: ParamOptions): Promise<RequestSuccessResult | RequestFailedResult | CustomError>=> {
+const request: Requestor = async (url: string, options?: RequestOptions):RequestPromiseReturned2=> {
   let processedOptions: ProcessedOptions; // 准备接收处理后的参数
   if (options) {
     ({url, options: processedOptions } = requestParamsHandle(url, options)); // 参数处理 options是对象所以可以不用返回
@@ -89,14 +93,14 @@ const request: RequestFunc = async (url: string, options?: ParamOptions): Promis
 /**
  * @Author: sonion
  * @msg: 创建一个具有拦截器的xhr请求
- * @param {object} interceptors - 拦截器对象
- * @param {function} [interceptors.request] - 请求拦截器，传入请求参数数组。请求拦截器必须返回一个包含url和options的对象
- * @param {function} [interceptors.response] - 响应拦截器，传入响应数据。返回值不可为空
- * @param {function} [interceptors.catch] - 失败拦截器，传入错误对象。
- * @param {function} [interceptors.finally] - 成功失败都会运行的拦截器，没有传入值。
- * @return {function} 返回使用了拦截器的请求函数。参数和request方法一样。
+ * @param { Interceptor } interceptors - 拦截器对象
+ * @param { Interceptor['request'] } [interceptors.request] - 请求拦截器，传入请求参数数组。请求拦截器必须返回一个包含url和options的对象
+ * @param { Interceptor['response'] } [interceptors.response] - 响应拦截器，传入响应数据。返回值不可为空
+ * @param { Interceptor['catch'] } [interceptors.catch] - 失败拦截器，传入错误对象。
+ * @param { Interceptor['finally'] } [interceptors.finally] - 成功失败都会运行的拦截器，没有传入值。
+ * @return { RequestMainFunc } 返回使用了拦截器的请求函数。参数和request方法一样。
  */
-request.create = (interceptors = {} as InterceptorsObject) => {
+request.create = (interceptors: Interceptor = {}): RequestMainFunc => {
   return createInterceptor.call(request, interceptors);
 };
 
