@@ -1,0 +1,24 @@
+{
+  // 更改此项以匹配您的项目 // 配置在这里面的就有.d.ts的类型提示
+  "include": ["src/**/*", "dist/**/*", "src", "dist"],
+  "compilerOptions": {
+    // 告诉 TypeScript 读取JS文件，如
+    // 通常它们作为源文件被忽略
+    "allowJs": true,
+    // 生成d.ts文件
+    "declaration": true,
+    // 这个编译器运行应该
+    // 是否只输出 d.ts 文件
+    "emitDeclarationOnly": false,
+    // 类型应该进入这个目录。
+    // 删除它会放置 .d.ts 文件
+    // .js 文件旁边
+    "outDir": "dist",
+    // 使用 IDE 函数时转到 js 文件，源码地图
+    "declarationMap": false,
+    "lib": ["ES2020", "dom", "ES2021.String"],
+    // "target": "ES2021", // 设置了影响可选链操作符
+    // "module": "es2022",
+    // "moduleResolution": "node"
+  }
+}
