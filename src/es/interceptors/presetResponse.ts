@@ -18,10 +18,10 @@ export type CreateRespInterceptorsPreset = typeof createResponsePreset;
 const createResponsePreset = (callback?: RequestSuccessCallback ): RespInterceptors=>{
   return {
     // 响应拦截器，利用解构
-    response: ({ status, headers, ...resp })=>{
+    response: ({ status, headers, ...resp }: RequestSuccessResult | RequestFailedResult)=>{
       // 错误抛到catch中处理
       const newRes = callback && callback({status, headers, ...resp})
-      if (status !== 200) throw {code: -1, msg: (resp as RequestFailedResult)?.msg || (resp as RequestSuccessResult)?.data?.msg || '网络请求错误'};
+      if (status < 200 || status >= 300) throw {code: -1, msg: (resp as RequestFailedResult)?.msg || (resp as RequestSuccessResult)?.data?.msg || '网络请求错误'};
       if ('data' in resp && getType(resp.data) === 'Object' && (resp.data?.code || !resp.data?.data)) throw resp.data; 
       // 服务器返回：code不为0、null、undefined， 且没有data属性的抛出错误，在后续catch里处理
       return newRes || (resp as RequestSuccessResult).data; // 服务器返回：code为0、null、undefined，或有data属性的在后续then里处理

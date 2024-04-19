@@ -1,6 +1,6 @@
 import type { 
   RequestOptions, CreateInterceptorFunc, Interceptor, RequestMainFunc,
-  RequestSuccessResult, RequestFailedResult, CustomError, RequestPromiseReturned
+  RequestSuccessResult, RequestFailedResult, CustomError
 } from '../../types'
 
 

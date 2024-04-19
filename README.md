@@ -8,6 +8,9 @@
 ###### 这个库的初衷是在一个较大的项目中每个同事要去实现一遍接口请求的逻辑，实现都不一样。所以需要统一响应结果、token管理等，统一收拢请求，提高对请求的掌控。随着越来越多项目中使用，发现要换回去成本已经很高了。就坚持更新下来了。慢慢的功能加的越来越多。fetch、xhr、node http、重试、超时、手动取消、返回进度、拦截器、拦截器预设。反正自己用到什么就加什么。后期考虑加请求并发控制。
 ###### 不过一直尽量坚持使用Fetch API原生规范的 url + options 传参，Promise返回。除非像requestSse这种没办法用Promise返回的。
 
+#### 维护
+###### 有使用问题、加功能，欢迎提issues。看到一定会回复，能加的功能也会尽量加。
+
 
 #### 关于request、requestXhr 参数和返回值：
 ##### 参数大方向上都保持和 fetch API一致，参数一：url，参数二：options。在options中会有一些自定义值，cancel、maxRetries、onProgress、timeout等。
@@ -104,10 +107,10 @@ import type { ParamOptions, requestFunc } from 'fetchok/types';
 ###### node 环境目前只支持：requset、toParams、createResponsePreset。request使用的 Fetch API 只支持到 node18。所以node中暂不支持Fetch API。微信小程序支持的方法：requset、toParams、createResponsePreset、promisic。
 
 ##### 关于微信小程序
-###### 1、小程序现在支持pages目录为miniprogram子目录的模版，不知道为啥。有明白的兄弟帮忙反馈下。
+###### 1、小程序现在支持pages目录为miniprogram子目录的模版，不知道为啥。有明白的兄弟帮忙在issues反馈下。
 ###### 2、因为本库需要同时支持浏览器、nodejs、微信小程序环境。浏览器通过exports字段下的"."子路径支持。nodejs通过exports字段下的"./node"子路径支持，微信小程序不支持子路径（exports字段），只能通过main和module字段支持。按说主"types"字段应该指定小程序环境的TS类型声明文件。但"."下的TS类型声明文件不能被识别，那也就是说浏览器环境的TS类型声明文件就缺失了，这是我们不能接受的。所以主"types"指定为浏览器的TS类型声明文件。这样也能覆盖小程序的大多出类型。可还是有个别函数没有TS类型。可能需要手动指定，目前只有：promisic函数。有知道怎么解决 exports字段下的"."字段下的"types"不生效的兄弟欢迎反馈。
 ###### 3、小程序的响应进度依赖requestTask.onChunkReceived，但该功能在某些机型上存在不触发的bug（可以去社区向官方反应）。所以在第一次尝试使用进度功能不触发后，会立即重试一次，并彻底关闭该功能（通过在Storage中存ALLOW_PROGRESS属性的方式实现）。
-###### 4、小程序通过requestTask.onChunkReceived流式返回时内容可能不稳定，似乎返回的arrayBuffer合并后大于Content-Length。所以被必暂不建议使用。我当前的所有得真机调试都不能确定问题。也欢迎有能力的小伙伴反馈。
+###### 4、小程序通过requestTask.onChunkReceived流式返回时内容可能不稳定，似乎返回的arrayBuffer合并后大于Content-Length。所以被必暂不建议使用。我当前的所有得真机调试都不能确定问题。也欢迎有能力的小伙伴提issues反馈。
 
 
 >* 包含的所有方法：看导入部分。

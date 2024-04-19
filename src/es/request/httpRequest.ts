@@ -38,7 +38,7 @@ const _request = ({
   return new Promise((resolve, reject)=>{
     const _http =  options.port === 443 ? https : http; // 需要判断是http还是https
     const req = _http(options as Parameters<typeof http>[1], (res)=>{
-      if (res.statusCode !== 200 ) {
+      if (res.statusCode < 200 || res.statusCode >= 300 ) {
         // const err: CustomError = new Error(res.statusMessage);
         // err.status = res.statusCode;
         // reject(err); // 直接返回错误代码的

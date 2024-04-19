@@ -126,9 +126,9 @@ const _request = ({
     xhr.onload = (e) => {
       // 成功回调
       const headers = xhr.getResponseHeaders(); // 自定义原型方法
-      if (xhr.status !== 200) {
+      if (xhr.status < 200 || xhr.status >= 300) {
         resolve({ status: xhr.status, headers, msg: xhr.statusText || "网络请求错误" }); // 直接返回错误代码的
-        //不存要重试；1xx：临时，换协议等。3xx重定向。4xx：请求错误。5xx：服务器内部错误
+        // 不存要重试；1xx：临时，换协议等。3xx重定向。4xx：请求错误。5xx：服务器内部错误
       }; // 错误前置处理
       const contentType = xhr.getResponseHeader("content-type") || "";
       resType = getResponseType(resType, contentType);

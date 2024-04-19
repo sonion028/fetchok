@@ -69,7 +69,7 @@ export interface CustomError extends Error {
 }
 
 // 请求返回值类型
-export type RequestPromiseReturned = Promise<RequestSuccessResult | RequestFailedResult | CustomError>;
+export type RequestPromiseReturned = Promise<RequestSuccessResult | RequestFailedResult>;
 
 // 有上传进度请求的参数
 export type RequestOptionsPlus = RequestOptions & { upProgress?:  PickOne<RequestOptions, 'onProgress'> };
@@ -101,7 +101,7 @@ export type TokenManager = {
 // 拦截器对象类型
 export type Interceptor = {
   request?: (url: string, options: RequestOptions)=>[url: string, options: RequestOptions],
-  response?: (res: RequestSuccessResult | RequestFailedResult)=>RequestSuccessResult | Blob | string | unknown, // 拦截器返回值，其实还可能有
+  response?: (res: RequestSuccessResult | RequestFailedResult)=>RequestSuccessResult | Blob | ArrayBuffer | string | unknown, // 拦截器返回值，其实还可能有
   catch?: (err: RequestFailedResult | CustomError)=>RequestFailedResult | CustomError,
   finally?: ()=>void
 }
