@@ -11,8 +11,6 @@ import type { RequestOptions, RequestSuccessResult } from '../../types';
 
 
 
-
-
 /**
  * @Author: sonion
  * @msg: 将包含ArrayBuffer的数组合并为一个ArrayBuffer
@@ -65,7 +63,7 @@ const createResponseTypeHandle = (responseType: RequestOptions['resType']): Retu
     // blob返回一个数组带上类型  其它不带，多传参数也不影响
     (status, res, headers, total)=> {
       let data: Blob | ArrayBuffer;
-      if (typeof Blob === 'undefined') data = _mergedArrayBuffer(res, total)
+      if (typeof Blob === void 0) data = _mergedArrayBuffer(res, total)
       else data = new Blob(res as BlobPart[], { type: headers.get("content-type") });
       return ({ status, data, headers })
     }

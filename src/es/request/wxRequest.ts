@@ -4,6 +4,7 @@ import type {
 } from '../../types'
 import { createInterceptor } from '../interceptors/create';
 import { requestParamsHandle, getObjectHeadersKey } from '../utils/param/not.support.Headers'
+import { contentTypeRegExp, contentLengthRegExp } from '../utils/util' // 匹配contentType、contentLength的正则表达式
 import { _requestRetry } from '../utils/retry.util'
 // 创建各类型响应处理函数
 import { createResponseTypeHandle, getResponseType } from '../utils/response.util'
@@ -131,9 +132,11 @@ const _request = ({url, headers, body, cancel, onProgress, resType, ...options}:
         }
         resValue.status = status;
         resValue.headers = header;
-        const {contentLength, contentType} = getObjectHeadersKey(header as HeadersObject); // 获取contentLength、contentType真是名字
-        total = resValue.total = (+ header[contentLength] || resValue.total); // 获取
-        const responseType = getResponseType(resType, header[contentType]); // 获取返回值类型
+        const isContentType = (key: string) => contentTypeRegExp.test(key); // 判断key是否是contentType的函数
+        const isContentLength = (key: string)=> contentLengthRegExp.test(key); // 判断key是否是contentLength的函数
+        const originKeyMap = getObjectHeadersKey(header as HeadersObject, [isContentType, isContentLength]); // 获取contentLength、contentType真实名字
+        total = resValue.total = (+ header[originKeyMap.get(isContentLength)] || resValue.total); // 获取
+        const responseType = getResponseType(resType, header[originKeyMap.get(isContentType)]); // 获取返回值类型
         ([resValue.responseDecoder, resValue.resultHandler] = createResponseTypeHandle(responseType)); // 创建每一部分返回和最终返回处理函数
       });
       // 根据收到的每个人chunk 调响应进度函数

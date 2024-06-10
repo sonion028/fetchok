@@ -1,5 +1,6 @@
 node_modules/
 backup/
-test.html
+test/
 .DS_Store
 **/.DS_Store
+issues

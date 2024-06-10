@@ -2,8 +2,8 @@ const path = require("node:path");
 const TerserPlugin = require("terser-webpack-plugin");
 const nodeExternals = require("webpack-node-externals")
 const { deepClone, deleteFolder, copyFile } = require('./util');
-const RemoveEsModuleFlag = require('webpack-remove-esm-flag');
-const webpack = require('webpack');
+const RemoveEsModuleFlag = require('webpack-remove-esm-flag'); // 移除esm Module标记
+const DeleteConsole = require('webpack-delete-console'); // 移除console
 
 
 const globalConfig = {
@@ -24,6 +24,7 @@ const globalConfig = {
   resolve: {
     extensions: [".ts", ".js"],
   },
+  // plugins: [new DeleteConsole()], // 传输就保存warn、error
   module: {
     rules: [
       {
@@ -50,7 +51,16 @@ const globalConfig = {
             // comments: false, // 删除所有注释
           },
           compress: { 
-            drop_console: true, // 删除所有 console
+            // drop_console: true, // 删除所有 console
+            pure_funcs: [
+              'console.log', // 移除console.log
+              'console.info', // 移除console.info
+              'console.debug', // 移除console.debug
+              'console.time', // 移除console.time
+              'console.timeEnd', // 移除console.timeEnd
+              'console.dir', // 移除console.dir
+              'console.table', // 移除console.table
+            ] // 只保留console.warn、console.error
           }, 
         },
       }),
@@ -92,6 +102,7 @@ const addAutoRemoveESMFlagConfig = (config)=>{
 // 小程序Mac缺少TextDecoder，自动注入 // 自定义了 MyTextDecoder，暂时不用注入了
 const addAutoInjectDecoderConfig = (config)=>{
   // config.plugins = config.plugins || [];
+  // const webpack = require('webpack');
   // config.plugins.push(new webpack.ProvidePlugin({
   //   TextDecoder: ['text-decoding', 'TextDecoder'],
   // }));
@@ -131,8 +142,3 @@ module.exports =()=>{
     createWxAppletCJSConfig(),
   ];
 }
-
-
-
-
-

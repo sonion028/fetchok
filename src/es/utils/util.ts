@@ -48,29 +48,34 @@ const contentTypeRegExp = /^content-?type$/i;
 const contentLengthRegExp = /^content-?length$/i;
 // 获取Content-Type名，因为可能写的不规范
 type GetContentTypeNameFunc = (headers: HeadersObject) => string | void;
+
 /**
  * @Author: sonion
- * @msg: 获取headers对象中的contentType各种写法的名称
+ * @msg: 获取headers对象中的contentType各种写法的名称 暂时没用
  * @param {object} headers
  * @return {string | undefined}
  */
-const getContentTypeName: GetContentTypeNameFunc = (headers: HeadersObject):string | void=>Object.keys(headers).filter(keyName=>contentTypeRegExp.test(keyName))[0];
+const getContentTypeName: GetContentTypeNameFunc = (headers: HeadersObject):string | void =>Object.keys(headers).filter(keyName=>contentTypeRegExp.test(keyName))[0];
 
 
-/**
+const getType = (()=>{
+  const regExp = /^\[[a-z]+ ([A-Za-z]+)\]$/; // 会重复创建正则对象，所以立即执行函数提供闭包的方式
+  /**
  * @Author: sonion
  * @msg: 获取元素的数据类型
  * @param {any} anyData - 要获取类型的
  * @return {string} - 基本类型返回小写的类型字符串(同typeof)。数组返回'Array',其他引用类型返回Symbol.toStringTag属性值
  */
-const getType = (anyData: unknown): string =>{
-  if (anyData === null) return 'null'
-  if (typeof anyData !== 'object') return typeof anyData
-  if (Array.isArray(anyData)) return 'Array'
-  return Object.prototype.toString.call(anyData).replace(getType.regExp, "$1");
-}
-// 重复使用会重复创建正则对象，所以提出来
-getType.regExp = /^\[[a-z]+ ([A-Za-z]+)\]$/;
+  const getType = (anyData: unknown): string =>{
+    if (anyData === null) return 'null'
+    if (typeof anyData !== 'object') return typeof anyData
+    if (Array.isArray(anyData)) return 'Array'
+    return Object.prototype.toString.call(anyData).replace(regExp, "$1");
+  }
+  return getType;
+})();
+
+
 
 
 

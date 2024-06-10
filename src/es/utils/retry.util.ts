@@ -66,7 +66,7 @@ const concurrencyRequest: concurrencyRequestor = (requestFunc: Requestor, tasks,
   if (tasks.length === 0) return Promise.resolve([]);
   return new Promise(resolve=>{
     const resultList = []; // 结果数组
-    const min = Math.min(maxNum, tasks.length); // 考虑任务数本就如果小于最大任务数
+    const min = Math.min(maxNum, tasks.length); // 考虑任务数如果本就小于最大任务数
     for(let i = 0; i < min; i++){
       _run(requestFunc, tasks, resultList, resolve);
     }

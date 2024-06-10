@@ -2,32 +2,35 @@ import { RequestOptions, HeadersObject } from '../../../types'
 import { contentTypeRegExp, contentLengthRegExp } from '../util'
 import { requestParamsAfterHandle } from './generic.util'
 
+
+// 判断是否是要找的key的函数
+type ValidateFunction = (key: string)=>Boolean;
+
 /**
  * @Author: sonion
- * @msg: 获取content-type、content-length
- * @param {HeadersObject} headers - 普通对象headers
- * @return {*}
+ * @msg: 查找对象中的属性名（key）是否符合某个规则
+ * @param {Record<string, unknown>} headers - 查找的普通对象 这里是普通对象格式的请求或响应头
+ * @param {ValidateFunction[]} funcs - 用于判断key是否符合条件的函数数组
+ * @return {Map<ValidateFunction, string>}
  */
-const getObjectHeadersKey =(headers: HeadersObject): {contentType: string, contentLength: string}=>{
-  const keyObj = {
-    contentType: '',
-    contentLength: ''
-  }
+const getObjectHeadersKey =(headers: Record<string, unknown>, funcs: ValidateFunction[]): Map<ValidateFunction, string>=>{
+  const keyMap: Map<ValidateFunction, string> = new Map();
   Object.keys(headers).forEach(originKeyName=>{
-    contentTypeRegExp.test(originKeyName) && (keyObj.contentType = originKeyName);
-    contentLengthRegExp.test(originKeyName) && (keyObj.contentLength = originKeyName)
+    funcs.forEach(fn=>fn(originKeyName) && keyMap.set(fn, originKeyName))
   })
-  return keyObj
+  return keyMap
 }
 
 /**
  * @Author: sonion
- * @msg: 判断普通对象中content-type是否是某个值。如：application/json、application/x-www-form-urlencoded
+ * @msg: 判断普通对象中的指定属性是否某个值开头。 如：content-type 是不是，但又忽略其后可能的别的参数 application/json、application/x-www-form-urlencoded
+ * @param {HeadersObject} headers - 目标对象
+ *  * @param {string} key - 判断的属性名
+ * @param {string} val - 要以xxx开头的这个值 也就是属性值
  * @return {boolean}
  */
-const _validateContentTypeMethod = (headers: HeadersObject, contentType: string, keyName: string): boolean=>{
-  if (headers[keyName]) return (headers[keyName] as string).startsWith(contentType);
-  else false;
+const _validateObjectValueStartWithMethod = (headers: HeadersObject, key: string, val: string, ): boolean=>{
+  return (headers[key]) ? (headers[key] as string).startsWith(val) : false;
 }
   
 /**
@@ -40,10 +43,20 @@ const _validateContentTypeMethod = (headers: HeadersObject, contentType: string,
 const requestParamsHandle = (url: string, options: RequestOptions)=>{
   let _validateContentType
   if (options?.headers){
-    const {contentType} = getObjectHeadersKey(options.headers as HeadersObject);
+    const isContentType = (key: string)=>contentTypeRegExp.test(key); // 判断是否是contentType的函数
+    const keyMap = getObjectHeadersKey(options.headers as HeadersObject, [isContentType]);
+    const contentTypeKey = keyMap.get(isContentType);
     // 没有就设置默认Content-Type，不需要默认就注释这一句。
-    options.headers[contentType] || (options.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8');
-    _validateContentType = (options, contentType):boolean=>_validateContentTypeMethod(options, contentType, contentType);
+    options.headers[contentTypeKey] || (options.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8');
+    _validateContentType = (
+      options: RequestOptions,
+      contentTypeVal: string
+    ): boolean =>
+      _validateObjectValueStartWithMethod(
+        options,
+        contentTypeKey,
+        contentTypeVal
+      );
   }
   return requestParamsAfterHandle(url, options, _validateContentType)
 }

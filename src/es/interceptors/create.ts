@@ -20,9 +20,11 @@ const createInterceptor: CreateInterceptorFunc = function(interceptors: Intercep
     let url: string, options: RequestOptions;
     if (interceptors.request) ([url, options] = interceptors.request(...args));
     else ([url, options] = args);
+    if (!args[1].cancel && options?.cancel) console.warn('在请求拦截器中添加的cancel参数可能外部读取不到，不能手动取消哟')
     if (!url) throw {code: -1, msg: '请求拦截器需要返回一个对象。url属性必填, options属性可选'};
     return this(url, options).then((res: RequestSuccessResult)=>{
       if (interceptors.response){
+        console.log('test')
         const newRes = interceptors.response(res);
         if (newRes === null || newRes === void 0) throw {code: -1, msg: '响应拦截器必须返回不为空的数据'};
         return newRes;
