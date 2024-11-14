@@ -1,4 +1,4 @@
-import type { CreateInterceptorFunc } from '../../types';
+import type { CreateInterceptorFunc } from "../../types";
 /**
  * @Author: sonion
  * @msg: 创建拦截器的请求

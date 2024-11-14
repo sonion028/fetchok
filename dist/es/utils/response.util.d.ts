@@ -5,9 +5,9 @@ import type { RequestOptions, RequestSuccessResult } from '../../types';
  * @param {'json'|'text'|'blob'} responseType
  * @return {[object, function]}
  */
-declare const createResponseTypeHandle: (responseType: RequestOptions['resType']) => [{
+declare const createResponseTypeHandle: (responseType: RequestOptions['resType']) => [TextDecoder | {
     decode: (any: any) => any;
-} | TextDecoder, (status: number, res: ArrayBuffer[], headers: Headers, total: number) => RequestSuccessResult];
+}, (status: number, res: ArrayBuffer[], headers: Headers, total: number) => RequestSuccessResult];
 /**
  * @Author: sonion
  * @msg: 获取返回值类型

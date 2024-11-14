@@ -1,6 +1,6 @@
 {
   "name": "fetchok",
-  "version": "2.7.3",
+  "version": "2.7.9",
   "description": "This is a JavaScript network request encapsulation that is only intended for personal use.",
   "type": "module",
   "main": "dist/index.wxApplet.cjs.js",

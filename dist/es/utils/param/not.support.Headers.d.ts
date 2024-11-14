@@ -1,4 +1,4 @@
-import { RequestOptions } from '../../../types';
+import { RequestOptions } from "../../../types";
 type ValidateFunction = (key: string) => Boolean;
 /**
  * @Author: sonion
@@ -18,8 +18,8 @@ declare const getObjectHeadersKey: (headers: Record<string, unknown>, funcs: Val
 declare const requestParamsHandle: (url: string, options: RequestOptions) => {
     url: string;
     options: import("../../../types").ReplaceType<RequestOptions<import("../../../types").OptionsBody>, {
-        body?: string;
+        body?: string | Blob | FormData | File;
     }>;
 };
 export { getObjectHeadersKey, // 获取content-type、content-length
-requestParamsHandle };
+requestParamsHandle, };

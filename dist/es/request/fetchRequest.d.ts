@@ -1,4 +1,4 @@
-import type { Requestor } from '../../types';
+import type { Requestor } from "../../types";
 /**
  * @Author: sonion
  * @msg: fetch请求封装 - 除列以下参数外，其余未列出参数都按fetch参数

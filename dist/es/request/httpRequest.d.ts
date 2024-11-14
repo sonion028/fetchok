@@ -1,4 +1,4 @@
-import type { Requestor } from '../../types';
+import type { Requestor } from "../../types";
 /**
  * @Author: sonion
  * @msg: nodejs http请求封装
@@ -18,4 +18,4 @@ import type { Requestor } from '../../types';
  * @property [data] - 服务器响应数据。有错误的时候不存在该属性。
  */
 declare const request: Requestor;
-export { request, };
+export { request };

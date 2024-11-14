@@ -22,7 +22,7 @@ const requestParamsAfterHandle = (
   };
   options.method = options.method.toUpperCase() as RequestOptions['method']; // 防止强行传小写
   if (options.resType && !['text', 'json', 'blob', 'arrayBuffer'].includes(options.resType)) delete options.resType; // 手动指定了，却不在选项中就删除
-  let body: string; // 准备在非GET时用
+  let body; // 准备在非GET时用
   if (getType(options.body) === 'Object'){
     if (options.method === 'GET'){
       url += '?' + toParams(options.body as OptionsBodyFirst); // get方式是在url链接后拼参数
@@ -35,7 +35,7 @@ const requestParamsAfterHandle = (
         body = toParams(options.body as OptionsBodyFirst);
       }
     }
-  }; // body的处理
+  }else if (options.body) body = options.body; // body的处理
   return {url, options: {...options, body} };
 };
 

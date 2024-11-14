@@ -1,11 +1,11 @@
-import type { RequestOptions, Requestor } from '../../types';
+import type { RequestOptions, Requestor } from "../../types";
 declare global {
     interface XMLHttpRequest {
         splitHeadersRegExp: RegExp;
         getResponseHeaders: () => Headers;
     }
 }
-export type RequestOptionsEasy = Omit<RequestOptions, 'onProgress' | 'resType' | 'maxRetries' | 'signal' | 'cancel' | 'timeout' | 'credentials'>;
+export type RequestOptionsEasy = Omit<RequestOptions, "onProgress" | "resType" | "maxRetries" | "signal" | "cancel" | "timeout" | "credentials">;
 export type RequestorEasy = (url: string, options: RequestOptionsEasy) => Promise<unknown>;
 /**
  * @Author: sonion
