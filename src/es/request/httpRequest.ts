@@ -62,25 +62,25 @@ const _request = ({
         });
         return;
       }
-      const contentType = res.headers["content-type"] || "";
-      const responseType = getResponseType(resType, contentType);
-      const [responseDecoder, resultHandler] =
-        createResponseTypeHandle(responseType); // 创建每一部分返回和最终返回处理函数
       const total: number = +parseInt(res.headers["content-length"]) || 0;
-      let loaded = 0,
-        responseBody = [];
-      res.on("data", (chunk) => {
-        responseBody.push(responseDecoder.decode(chunk)); // blob直接放入数组，否则解码后放入数组
+      const [setUint8Array, resultHandler] = createResponseTypeHandle(total); // 创建每一部分返回和最终返回处理函数
+      
+      let loaded = 0;
+      res.on("data", (chunk: Buffer) => {
+        setUint8Array(chunk);
         total && onProgress && onProgress((loaded += chunk.length), total);
       });
+
+      const contentType = res.headers["content-type"] || "";
+      const responseType = getResponseType(resType, contentType);
+      
       res.on("end", () => {
         // 这里处理的返回值。blob用其构造函数处理、否者拼接
         resolve(
           resultHandler(
             res.statusCode,
-            responseBody,
             new Headers(res.headers as HeadersInit),
-            total
+            responseType
           )
         );
       });

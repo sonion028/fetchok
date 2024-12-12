@@ -32,18 +32,6 @@ const ALLOW_PROGRESS = (()=>{
 })();
 
 
-/**
- * @Author: sonion
- * @msg: 处理未解码的部分，并合并到解码后的
- * @param {object} resVal
- * @return {object} 返回处理后的对象
- */
-const _handlePending = (resVal)=>{
-  resVal.pending.length && (resVal.responseBody = resVal.pending.map(item=>resVal.responseDecoder.decode(item)).concat(resVal.responseBody));
-  delete resVal.pending
-  return resVal
-}
-
 // 微信小程序命名空间
 declare namespace wx {
   interface RequestResult {
@@ -83,13 +71,14 @@ const _request = ({url, headers, body, cancel, onProgress, resType, ...options}:
   return new Promise((resolve, reject)=>{
     // 这个对象流式返回才需要
     const resValue = {
+      responseType: '', // 返回值类型
       total: 0, // 总长度
-      pending: [], // 未解码的 arrayBuffer
-      responseBody: [], // 解码后的 arrayBuffer
+      pending: [], // 未处理的的 arrayBuffer
       status: undefined, // 请求状态。用了流式返回success里就没有了
       headers: undefined, // 响应头。用了流式返回success里就没有了
-      responseDecoder: undefined, // 解码器
+      setUint8Array: undefined, // 添加流式返回的每一段数据方法
       resultHandler: undefined, // 返回处理函数
+      bodyActualLength: ()=>0, // 返回值真实长度，默认为0
     }
     // 下面才是请求参数
     options.url = url;
@@ -101,13 +90,12 @@ const _request = ({url, headers, body, cancel, onProgress, resType, ...options}:
     else options.responseType = 'text';
     options.success = ({ statusCode: status, data, header: headers }) => {
       if (options.enableChunked){
-        resValue.pending.length && _handlePending(resValue);
-        if (!resValue.responseBody.length){
+        if (!resValue.bodyActualLength()){
           ALLOW_PROGRESS.allow = false; // 不允许进度
           reject({ code: 600098, msg: '用了进度，onChunkReceived没有触发。该bug，需向微信反馈' })
           return
         }
-        resolve(resValue.resultHandler(resValue.status, resValue.responseBody, new Map(Object.entries(resValue.headers)), resValue.total));
+        resolve(resValue.resultHandler(resValue.status, new Map(Object.entries(resValue.headers)), resValue.responseType));
       } else resolve({status, headers: new Map(Object.entries(headers)), data });
     }; // json是否自动反序列化，需验证
     options.fail = ({ errno: code, errMsg: msg, }) => reject({ code: code || -1, msg });
@@ -136,12 +124,18 @@ const _request = ({url, headers, body, cancel, onProgress, resType, ...options}:
         const isContentLength = (key: string)=> contentLengthRegExp.test(key); // 判断key是否是contentLength的函数
         const originKeyMap = getObjectHeadersKey(header as HeadersObject, [isContentType, isContentLength]); // 获取contentLength、contentType真实名字
         total = resValue.total = (+ header[originKeyMap.get(isContentLength)] || resValue.total); // 获取
-        const responseType = getResponseType(resType, header[originKeyMap.get(isContentType)]); // 获取返回值类型
-        ([resValue.responseDecoder, resValue.resultHandler] = createResponseTypeHandle(responseType)); // 创建每一部分返回和最终返回处理函数
+        ([resValue.setUint8Array, resValue.resultHandler, resValue.bodyActualLength] = createResponseTypeHandle(total)); // 创建每一部分返回和最终返回处理函数
+        resValue.responseType = getResponseType(resType, header[originKeyMap.get(isContentType)]); // 获取返回值类型
       });
       // 根据收到的每个人chunk 调响应进度函数
       requestTask.onChunkReceived(({data})=>{
-        if (resValue.responseDecoder) resValue.responseBody.push(resValue.responseDecoder.decode(data)); // blob直接放入数组，否则解码后放入数组
+        if (resValue.setUint8Array) {
+          if (resValue.pending.length){
+            resValue.pending.forEach(item=> resValue.setUint8Array(new Uint8Array(item)));
+            Reflect.deleteProperty(resValue, 'pending');
+          }
+          resValue.setUint8Array(new Uint8Array(data));
+        }
         else resValue.pending.push(data);
         total && onProgress(loaded += data.byteLength, resValue.total);
         resValue.total = resValue.total > loaded ? resValue.total : loaded; // 如无contentLength，用blob、arrayBuffer导致无法合并。所以保底设置一个

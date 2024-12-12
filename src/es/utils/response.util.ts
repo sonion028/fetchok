@@ -10,69 +10,37 @@ import type { RequestOptions, RequestSuccessResult } from '../../types';
 })();
 
 
-
-/**
- * @Author: sonion
- * @msg: 将包含ArrayBuffer的数组合并为一个ArrayBuffer
- * @param {ArrayBuffer[]} res - 包含ArrayBuffer的数组
- * @param {number} total - 多个ArrayBuffer的总长度
- * @return {ArrayBuffer}
- */
-const _mergedArrayBuffer = (res: ArrayBuffer[], total: number): ArrayBuffer=>{
-  if (res?.length === 1) return res[0]
-  const mergedBuffer = new Uint8Array(total);
-  let offset = 0;
-  res.forEach(item => {
-    mergedBuffer.set(new Uint8Array(item), offset);
+const createResponseTypeHandle = (total: number) =>{
+  let offset = 0; // 当前offset // 也可以理解为mergedUint8Array当前的长度
+  const mergedUint8Array = new Uint8Array(total) // 合并后的buffer
+  // 把请求流式返回的每一段数据合并到mergedBuffer
+  const setUint8Array = (item: Uint8Array)=>{
+    mergedUint8Array.set(item, offset);
     offset += item.byteLength;
-  });
-  return mergedBuffer.buffer
+  }
+  const resultHandler = (status: number, headers: Headers, responseType: RequestOptions['resType']): RequestSuccessResult=>{
+    switch (responseType) {
+      case 'text':
+        const decoder = new TextDecoder('utf-8')
+        return { status, data: decoder.decode(mergedUint8Array), headers }
+      case 'json':
+        const decoder2 = new TextDecoder('utf-8')
+        return { status, data: JSON.parse(decoder2.decode(mergedUint8Array)), headers }
+      case 'blob':
+        return { status, data: new Blob([mergedUint8Array.buffer], { type: 'application/octet-stream' }), headers }
+      case 'arrayBuffer':
+        return { status, data: mergedUint8Array.buffer, headers }
+      default:
+        return { status, data: mergedUint8Array, headers }
+    }
+  }
+  return [setUint8Array, resultHandler, ()=>offset] as const
 }
 
 
-// 返回值处理函数类型
-type CreateResponseTypeHandle = (responseType: RequestOptions['resType'])=> [
-  {decode: (any)=>any} | TextDecoder, 
-  (status: number, res: ArrayBuffer[], headers: Headers, total: number)=>RequestSuccessResult
-];
-
-/**
- * @Author: sonion
- * @msg: 创建'json'、'text'、'blob'三种返回格式的处理函数。第一个是push前的Decoder对象，第二个是最终返回处理函数
- * @param {'json'|'text'|'blob'} responseType
- * @return {[object, function]}
- */
-const createResponseTypeHandle = (responseType: RequestOptions['resType']): ReturnType<CreateResponseTypeHandle >=>{
-  let decoder
-  if (responseType === 'text' || responseType === 'json'){
-    decoder = new TextDecoder('utf-8')
-  }else{
-    decoder = {decode: param => param} // fakeDecoder
-  };
   
-  if (responseType === 'text')return [
-    decoder,
-    (status, res, headers)=>({ status, data: res.join(''), headers })
-  ];
-  else if (responseType === 'json') return [
-    decoder,
-    (status, res, headers)=>({ status, data: JSON.parse(res.join('')), headers })
-  ];
-  else if (responseType === 'blob') return [
-    decoder,
-    // blob返回一个数组带上类型  其它不带，多传参数也不影响
-    (status, res, headers, total)=> {
-      let data: Blob | ArrayBuffer;
-      if (typeof Blob === void 0) data = _mergedArrayBuffer(res, total)
-      else data = new Blob(res as BlobPart[], { type: headers.get("content-type") });
-      return ({ status, data, headers })
-    }
-  ];
-  else return [ // arrayBuffer
-    decoder,
-    (status, res, headers, total)=>({ status, data: _mergedArrayBuffer(res, total), headers })
-  ]; 
-};
+
+
 
 /**
  * @Author: sonion

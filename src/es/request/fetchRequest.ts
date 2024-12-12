@@ -77,26 +77,45 @@ const request: Requestor = async (
         const data = await response[responseType]();
         return { status: response.status, headers: response.headers, data }; // 不带进度的返回
       }
-      let loaded = 0,
-        responseBody = [];
-      const [responseDecoder, resultHandler] =
-        createResponseTypeHandle(responseType); // 创建每一部分返回和最终返回处理函数
       const reader = response.body.getReader();
+      let loaded = 0;
+      // 用 setUint8Array 将每个 Uint8Array 合并为一个。否则后面合并药在遍历一次
+      const [setUint8Array, resultHandler] = createResponseTypeHandle(total); // 创建每一部分返回和最终返回处理函数
+      // 写法一
       while (true) {
         const { done, value } = await reader.read();
         if (done)
-          return resultHandler(
-            response.status,
-            responseBody,
-            response.headers,
-            total
-          ); // 这里处理的返回值。blob用其构造函数处理、否者拼接
+          return resultHandler(response.status, response.headers, responseType); 
         if (options.signal?.aborted)
           throw new DOMException("request canceled", "AbortError"); // 这个支持错误名，fetch原生取消，错误对象name就是AbortError。
         loaded += value.length; // 这里value可能为空，可以加判断或try…catch。暂不加，先测试一段时间。
-        responseBody.push(responseDecoder.decode(value)); // blob直接放入数组，否则解码后放入数组
+        setUint8Array(value);
         options.onProgress(loaded, total);
       }
+      // 写法二
+      // const stream = new ReadableStream({
+      //   start(controller) {
+      //     async function read() {
+      //       const { done, value } = await reader.read().catch((err) => {
+      //         console.error("Stream reading error:", err);
+      //         controller.error(err);
+      //         return { done: true, value: null };
+      //       });
+      //       if (done) {
+      //         controller.close();
+      //         return;
+      //       }
+      //       loaded += value.length;
+      //       controller.enqueue(value);
+      //       read();
+      //     }
+      //     read();
+      //   },
+      // });
+      // return new Response(stream, { headers: response.headers }).arrayBuffer().then(res=>{
+      //   setUint8Array(new Uint8Array(res));
+      //   return resultHandler(response.status, response.headers, responseType)
+      // });
     } catch (err) {
       // 因为用的>=所以都是0的时候就结束返回了
       if (retryCount >= maxRetries || "AbortError" === err.name) {
