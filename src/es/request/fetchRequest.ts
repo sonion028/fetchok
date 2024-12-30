@@ -59,6 +59,7 @@ const request: Requestor = async (
   do {
     try {
       const response = await fetch(url, processedOptions as RequestInit); // 单独测试原生fetch，注意跨域提示不全
+      // 似乎状态码不是成功就为false，待验证
       if (!response.ok) {
         // const err: CustomError = new Error(response.statusText || '网络请求错误'); // 重试根据这个判断
         // err.status = response.status; // 将状态加到报错信息里
