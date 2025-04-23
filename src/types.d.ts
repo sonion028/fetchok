@@ -51,7 +51,7 @@ export type RequestOptions<T = OptionsBody> = {
     | "PATCH"; // 请求方法
   headers?: HeadersObject | GlobalHeaders; // 请求头
   body?: T; // 请求体
-  credentials?: "omit" | "same-origin" | "include"; // 忽略、同域发送、跨域同域都发送
+  credentials?: "omit" | "same-origin" | "include"; // 忽略、同域发送(默认)、跨域同域都发送
   cancel?: {
     abort?: () => void;
     isCancelled?: boolean; // 是否取消
