@@ -73,6 +73,40 @@ const concurrencyRequest: concurrencyRequestor = (requestFunc: Requestor, tasks,
   }) as ReturnType<concurrencyRequestor>
 }
 
+/**
+ * @Author: sonion
+ * @msg: 并发控制函数
+ * @param {Array} tasks - 请求参数对象数组
+ * @param {number} concurrency - 最大并发数
+ * @return {Promise<PromiseSettledResult<T>[]>} - 返回请求Promise数组的Promise
+ */
+export const concurrencyController = <T>(
+  tasks: (() => Promise<T>)[],
+  concurrency = 5,
+) => {
+  if (!Array.isArray(tasks)) {
+    return Promise.reject(new Error('任务列表必须是一个数组'));
+  }
+  if (tasks.length <= 0) {
+    return Promise.resolve([]);
+  }
+  const results: Promise<T>[] = [];
+  let count = 0; // 已执行任务数
+  const _runTask = (i: number) => {
+    if (count > tasks.length - 1) {
+      return;
+    }
+    results[i] = tasks[i]().finally(() => {
+      _runTask(count++);
+    });
+  };
+  const min = Math.min(concurrency, tasks.length); // 任务数小于最大任务数
+  while (count < min) {
+    _runTask(count++);
+  }
+  return Promise.allSettled(results);
+};
+
 
 export {
   _requestRetry,
