@@ -73,6 +73,17 @@ const concurrencyRequest: concurrencyRequestor = (requestFunc: Requestor, tasks,
   }) as ReturnType<concurrencyRequestor>
 }
 
+
+interface ConcurrencyController {
+  <T>(tasks: (() => T)[], concurrency?: number): Promise<
+    PromiseSettledResult<Awaited<T>>[]
+  >;
+  <T, R>(
+    tasks: (() => T)[],
+    concurrency: number,
+    handler: (value: Awaited<T>) => R,
+  ): Promise<PromiseSettledResult<Awaited<R>>[]>;
+}
 /**
  * @Author: sonion
  * @msg: 并发控制函数
@@ -80,22 +91,27 @@ const concurrencyRequest: concurrencyRequestor = (requestFunc: Requestor, tasks,
  * @param {number} concurrency - 最大并发数
  * @return {Promise<PromiseSettledResult<T>[]>} - 返回请求Promise数组的Promise
  */
-const concurrencyController = <T>(tasks: (() => T)[], concurrency = 5) => {
+const concurrencyController: ConcurrencyController = <T, R>(
+  tasks: (() => T)[],
+  concurrency = 5,
+  handler?: (value: Awaited<T>) => R,
+) => {
   if (!Array.isArray(tasks)) {
     return Promise.reject(new Error('任务列表必须是一个数组'));
   }
   if (tasks.length <= 0) {
     return Promise.resolve([]);
   }
-  const results: Promise<T>[] = [];
+  const results: Promise<T | R>[] = [];
   let count = 0; // 已执行任务数
   const _runTask = (i: number) => {
     if (count > tasks.length - 1) {
       return;
     }
-    results[i] = Promise.resolve(tasks[i]()).finally(() => {
+    const res = (results[i] = Promise.resolve(tasks[i]()).finally(() => {
       _runTask(count++);
-    });
+    }));
+    results[i] = handler ? res.then(handler) : res;
   };
   const min = Math.min(concurrency, tasks.length); // 任务数小于最大任务数
   while (count < min) {
@@ -103,7 +119,6 @@ const concurrencyController = <T>(tasks: (() => T)[], concurrency = 5) => {
   }
   return Promise.allSettled(results);
 };
-
 
 export {
   _requestRetry,
