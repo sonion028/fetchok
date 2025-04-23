@@ -75,10 +75,11 @@ const concurrencyRequest: concurrencyRequestor = (requestFunc: Requestor, tasks,
 
 
 interface ConcurrencyController {
-  <T>(tasks: (() => T)[], concurrency?: number): Promise<
+  <T>(signal: AbortSignal, tasks: (() => T)[], concurrency?: number): Promise<
     PromiseSettledResult<Awaited<T>>[]
   >;
   <T, R>(
+    signal: AbortSignal,
     tasks: (() => T)[],
     concurrency: number,
     handler: (value: Awaited<T>) => R,
@@ -87,12 +88,14 @@ interface ConcurrencyController {
 /**
  * @Author: sonion
  * @msg: 并发控制函数
+ * @param {AbortSignal} signal - 取消信号
  * @param {Array} tasks - 请求参数对象数组
  * @param {number} [concurrency=5] - 最大并发数
  * @param {Function} [handler] - 处理函数。如有该参数，下一个任务以该函数返回promise完成为准
  * @return {Promise<PromiseSettledResult<T>[]>} - 返回请求Promise数组的Promise
  */
 const concurrencyController: ConcurrencyController = <T, R>(
+  signal: AbortSignal,
   tasks: (() => T)[],
   concurrency = 5,
   handler?: (value: Awaited<T>) => R,
@@ -108,7 +111,7 @@ const concurrencyController: ConcurrencyController = <T, R>(
     let running = 0; // 已执行任务数
     let finishedCount = 0; // 已完成任务数
     const _runTask = (i: number) => {
-      if (i > tasks.length - 1) {
+      if (i > tasks.length - 1 || signal?.aborted) {
         return;
       }
       const res = Promise.resolve(tasks[i]());
