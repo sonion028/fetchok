@@ -88,7 +88,8 @@ interface ConcurrencyController {
  * @Author: sonion
  * @msg: 并发控制函数
  * @param {Array} tasks - 请求参数对象数组
- * @param {number} concurrency - 最大并发数
+ * @param {number} [concurrency=5] - 最大并发数
+ * @param {Function} [handler] - 处理函数。如有该参数，下一个任务以该函数返回promise完成为准
  * @return {Promise<PromiseSettledResult<T>[]>} - 返回请求Promise数组的Promise
  */
 const concurrencyController: ConcurrencyController = <T, R>(
@@ -108,17 +109,20 @@ const concurrencyController: ConcurrencyController = <T, R>(
     if (count > tasks.length - 1) {
       return;
     }
-    const res = (results[i] = Promise.resolve(tasks[i]()).finally(() => {
-      _runTask(count++);
-    }));
+    const res = Promise.resolve(tasks[i]());
     results[i] = handler ? res.then(handler) : res;
+    results[i].finally(() => {
+      _runTask(count++);
+    });
   };
   const min = Math.min(concurrency, tasks.length); // 任务数小于最大任务数
   while (count < min) {
+    console.log('while count', count);
     _runTask(count++);
   }
   return Promise.allSettled(results);
 };
+
 
 export {
   _requestRetry,
