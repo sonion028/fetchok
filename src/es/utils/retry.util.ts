@@ -96,32 +96,36 @@ const concurrencyController: ConcurrencyController = <T, R>(
   tasks: (() => T)[],
   concurrency = 5,
   handler?: (value: Awaited<T>) => R,
-) => {
-  if (!Array.isArray(tasks)) {
-    return Promise.reject(new Error('任务列表必须是一个数组'));
-  }
-  if (tasks.length <= 0) {
-    return Promise.resolve([]);
-  }
-  const results: Promise<T | R>[] = [];
-  let count = 0; // 已执行任务数
-  const _runTask = (i: number) => {
-    if (count > tasks.length - 1) {
-      return;
+) =>
+  new Promise<PromiseSettledResult<Awaited<T | R>>[]>((resolve, reject) => {
+    if (!Array.isArray(tasks)) {
+      reject(new Error('任务列表必须是一个数组'));
     }
-    const res = Promise.resolve(tasks[i]());
-    results[i] = handler ? res.then(handler) : res;
-    results[i].finally(() => {
-      _runTask(count++);
-    });
-  };
-  const min = Math.min(concurrency, tasks.length); // 任务数小于最大任务数
-  while (count < min) {
-    console.log('while count', count);
-    _runTask(count++);
-  }
-  return Promise.allSettled(results);
-};
+    if (tasks.length <= 0) {
+      resolve([]);
+    }
+    const results: Promise<T | R>[] = [];
+    let running = 0; // 已执行任务数
+    let finishedCount = 0; // 已完成任务数
+    const _runTask = (i: number) => {
+      if (i > tasks.length - 1) {
+        return;
+      }
+      const res = Promise.resolve(tasks[i]());
+      results[i] = handler ? res.then(handler) : res;
+      results[i].finally(() => {
+        if (++finishedCount > tasks.length - 1) {
+          resolve(Promise.allSettled(results));
+        } else {
+          _runTask(running++);
+        }
+      });
+    };
+    const min = Math.min(concurrency, tasks.length); // 任务数小于最大任务数
+    while (running < min) {
+      _runTask(running++);
+    }
+  });
 
 
 export {
