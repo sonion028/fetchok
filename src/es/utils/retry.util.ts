@@ -80,10 +80,7 @@ const concurrencyRequest: concurrencyRequestor = (requestFunc: Requestor, tasks,
  * @param {number} concurrency - 最大并发数
  * @return {Promise<PromiseSettledResult<T>[]>} - 返回请求Promise数组的Promise
  */
-export const concurrencyController = <T>(
-  tasks: (() => Promise<T>)[],
-  concurrency = 5,
-) => {
+const concurrencyController = <T>(tasks: (() => T)[], concurrency = 5) => {
   if (!Array.isArray(tasks)) {
     return Promise.reject(new Error('任务列表必须是一个数组'));
   }
@@ -96,7 +93,7 @@ export const concurrencyController = <T>(
     if (count > tasks.length - 1) {
       return;
     }
-    results[i] = tasks[i]().finally(() => {
+    results[i] = Promise.resolve(tasks[i]()).finally(() => {
       _runTask(count++);
     });
   };
@@ -110,5 +107,6 @@ export const concurrencyController = <T>(
 
 export {
   _requestRetry,
-  concurrencyRequest
+  concurrencyRequest,
+  concurrencyController
 }
