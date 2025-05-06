@@ -119,7 +119,7 @@ const request: Requestor = async (
       // });
     } catch (err) {
       // 因为用的>=所以都是0的时候就结束返回了
-      if (retryCount >= maxRetries || "AbortError" === err.name) {
+      if (retryCount >= maxRetries || (err instanceof DOMException && "AbortError" === err.name)) {
         // 超次数或手动取消
         // err.status = err.status || -1; // 加一个默认状态
         if ((err as CustomError) instanceof Error) {
